@@ -53,14 +53,18 @@ Aalen University, Beethovenstr. 1, 73430 Aalen \\
 % ------------------------------------------------------------
 \section{Introduction} % Cumi
 \subsection{Novelty \& Expected Contributions} % Cumi
-\subsection{Research Gap \& Questions} % Tobi
+\subsection{Research Question} % Tobi
 This work adresses the tollowing question: \\
 \textbf{CycleGAN-generated chest CT images improve object detection accuracy when real data is limited?}
 % ------------------------------------------------------------
 \section{Related Work}
 \subsection{GANs in Medical Imaging} % Tobi
+GANs have become an effective tool in medical imaging for image synthesis, segmentation and classification. Frid-Adar et al.~\cite{frid2018gan} demonstrated that GAN-generated synthetic CT images of liver lesions improved classification. Sandfort et al.~\cite{sandfort2019data} utilized CycleGAN to adapt between contrast and non-contrast CT images, improving segmentation performance. Singh and Raza~\cite{singh2021medical} reviewed GAN architectures and emphasized their potential to overcome data scarcity. However, few studies have utilized GANs directly to object detection.
 \subsection{Object Detection in Medical Imaging} % Tobi
+Deep learning-based approaches have seen widespread use in medical object detection~\cite{albuquerque2025deep}\cite{yang2021artificial}. However, performance is limited due to the low availability of annotated medical images. To overcome this data scarcity, GAN-generated images can be generated to augment scarce datasets.
 \subsection{Positioning of this Work} % Tobi
+While GAN-based data augmentation has proven effective for image classification and segmentation, its impact on object detection is underexplored. This work adresses the gap by applying GAN-generated CT images to augment a medical images dataset and evaluate their effect on object detection performance.
+
 % ------------------------------------------------------------
 \section{Methodology} % Tobi
 \subsection{Dataset description} % Tobi

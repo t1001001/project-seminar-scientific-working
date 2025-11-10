@@ -1,0 +1,39 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{albuquerque2025deep}
+Albuquerque, C., Henriques, R., Castelli, M.: Deep learning-based object detection algorithms in medical imaging: Systematic review. Heliyon  \textbf{11}(1) (2025)
+
+\bibitem{frid2018gan}
+Frid-Adar, M., Diamant, I., Klang, E., Amitai, M., Goldberger, J., Greenspan, H.: Gan-based synthetic medical image augmentation for increased cnn performance in liver lesion classification. Neurocomputing  \textbf{321},  321--331 (2018)
+
+\bibitem{cycleganeaugmentation}
+Hammami, M., Friboulet, D., Kechichian, R.: Cycle gan-based data augmentation for multi-organ detection in ct images via yolo. In: 2020 IEEE International Conference on Image Processing (ICIP). pp. 390--393 (2020). \doi{10.1109/ICIP40778.2020.9191127}
+
+\bibitem{yolo11}
+Khanam, R., Hussain, M.: Yolov11: An overview of the key architectural enhancements (2024), \url{https://arxiv.org/abs/2410.17725}
+
+\bibitem{odmetrics}
+Padilla, R., Netto, S.L., da~Silva, E.A.B.: A survey on performance metrics for object-detection algorithms. In: 2020 International Conference on Systems, Signals and Image Processing (IWSSIP). pp. 237--242 (2020). \doi{10.1109/IWSSIP48289.2020.9145130}
+
+\bibitem{yoloreview}
+Ragab, M.G., Abdulkadir, S.J., Muneer, A., Alqushaibi, A., Sumiea, E.H., Qureshi, R., Al-Selwi, S.M., Alhussian, H.: A comprehensive systematic review of yolo for medical object detection (2018 to 2023). IEEE Access  \textbf{12},  57815--57836 (2024). \doi{10.1109/ACCESS.2024.3386826}
+
+\bibitem{sandfort2019data}
+Sandfort, V., Yan, K., Pickhardt, P.J., Summers, R.M.: Data augmentation using generative adversarial networks (cyclegan) to improve generalizability in ct segmentation tasks. Scientific reports  \textbf{9}(1),  16884 (2019)
+
+\bibitem{luna16}
+Setio, A.A.A., Traverso, A., De~Bel, T., Berens, M.S., Van Den~Bogaard, C., Cerello, P., Chen, H., Dou, Q., Fantacci, M.E., Geurts, B., et~al.: Validation, comparison, and combination of algorithms for automatic detection of pulmonary nodules in computed tomography images: the luna16 challenge. Medical image analysis  \textbf{42},  1--13 (2017)
+
+\bibitem{singh2021medical}
+Singh, N.K., Raza, K.: Medical image generation using generative adversarial networks: A review. Health informatics: A computational perspective in healthcare pp. 77--96 (2021)
+
+\bibitem{yang2021artificial}
+Yang, R., Yu, Y.: Artificial convolutional neural network in object detection and semantic segmentation for medical imaging analysis. Frontiers in oncology  \textbf{11},  638182 (2021)
+
+\bibitem{zhu2020unpairedimagetoimagetranslationusing}
+Zhu, J.Y., Park, T., Isola, P., Efros, A.A.: Unpaired image-to-image translation using cycle-consistent adversarial networks (2020), \url{https://arxiv.org/abs/1703.10593}
+
+\end{thebibliography}

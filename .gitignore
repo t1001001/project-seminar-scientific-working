@@ -215,3 +215,5 @@ main.profile_default
 main.synctex.gz
 main.fls
 main.pdf
+main.bbl
+main.blg

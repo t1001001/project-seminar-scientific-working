@@ -52,7 +52,18 @@ Aalen University, Beethovenstr. 1, 73430 Aalen \\
 %
 % ------------------------------------------------------------
 \section{Introduction} % Cumi
+Object detection models, especially in sensitive fields like medical imaging (CT images), often face the problem of having too little usable labeled data, or it is very difficult to access such data due to privacy regulations, costs, and other restrictions. As a result, models trained on small or unbalanced datasets tend to overfit and perform poorly when generalizing to new test data. To address this issue, we make use of Generative Adversarial Networks (GANs), which can generate synthetic data to improve model training.
 \subsection{Novelty \& Expected Contributions} % Cumi
+This paper aims to support the medical sector in data analysis by providing one of the few evaluations of GAN-based data augmentation for object detection in CT imaging. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images.
+\begin{itemize}
+\item[--] Empirical evaluation of GAN-generated CT images for improving object detection model performance.
+
+\item[--] Quantitative comparison between models trained on original and augmented datasets using standard object detection metrics.
+
+\item[--] Insights into the generalization potential of GAN-based augmentation for limited medical datasets.
+
+\item[--] Guidelines for future research on integrating synthetic data into medical AI pipelines.
+\end{itemize}
 \subsection{Research Question} % Tobi
 This work adresses the tollowing question: \\
 \textbf{CycleGAN-generated chest CT images improve object detection accuracy when real data is limited?}

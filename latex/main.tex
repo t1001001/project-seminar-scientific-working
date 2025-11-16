@@ -52,7 +52,18 @@ Aalen University, Beethovenstr. 1, 73430 Aalen \\
 %
 % ------------------------------------------------------------
 \section{Introduction} % Cumi
+Object detection in computed tomography (CT) plays a crucial role in reinforcing diagnostic accuracy and clinical decision-making. However, object detection models, especially in sensitive fields like medical imaging, often face the problem of having too little usable labeled data, or it is very difficult to access such data due to privacy regulations, costs, and other restrictions. As a result, models trained on small or unbalanced datasets tend to overfit and perform poorly when generalizing to new test data. To address this issue, we make use of Generative Adversarial Networks (GANs)\cite{goodfellow2014gan}, which can generate synthetic data to improve model training.
 \subsection{Novelty \& Expected Contributions} % Cumi
+This paper aims to support the medical sector in data analysis by analyzing how GAN-based data augmentation affects object detection in CT imaging. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images. The expected contributions of this work include:
+\begin{itemize}
+\item[--] Empirical evaluation of GAN-generated CT images for improving object detection model performance.
+
+\item[--] Quantitative comparison between models trained on original and augmented datasets using standard object detection metrics.
+
+\item[--] Insights into the generalization potential of GAN-based augmentation for limited medical datasets.
+
+\item[--] Guidelines for future research on integrating synthetic data into medical AI pipelines.
+\end{itemize}
 \subsection{Research Question} % Tobi
 This work adresses the tollowing question: \\
 \textbf{CycleGAN-generated chest CT images improve object detection accuracy when real data is limited?}
@@ -83,6 +94,7 @@ The performance of YOLO11 is evaluated using standard metrics for object detecti
 \end{itemize}
 % ------------------------------------------------------------
 \section{Expected Results} % Cumi
+We expect that the object detection model trained on the augmented dataset with GAN-generated CT images will achieve noticable improvement in performance compared to training on the original data alone. We also anticipate higher detection accuracy and better generalization because the synthetic images offer greater diversity into the training set. In the end, the results should provide insight into whether GAN-based augmentation is a practical and effective metho for addressing data scarcity in medical imaging.
 %
 % ---- Bibliography ----
 %

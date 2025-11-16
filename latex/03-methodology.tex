@@ -1,0 +1,15 @@
+\section{Methodology} % Tobi
+\subsection{Dataset description} % Tobi
+The LUNA16 dataset is a benchmark medical imaging dataset for lung nodule detection. It consists of 888 chest CT scans and is derived from the LIDC-IDRI dataset~\cite{luna16}.
+\subsection{GAN Model} % Tobi
+We utilize a CycleGAN architecture to generate realistic synthetic chest CT images for data augmentation. CycleGAN consists of two generator and discriminator networks, enabling unpaired image-to-image translation~\cite{zhu2020unpairedimagetoimagetranslationusing}. CycleGAN has shown strong performance in medical image synthesis tasks~\cite{cycleganeaugmentation}\cite{sandfort2019data}.
+\subsection{Object Detection Model} % Tobi
+For the object detection task, we utilize the YOLO11 architecture, which represents the latest advancement in the YOLO familiy~\cite{yolo11}. YOLO has demonstrated strong capabilities in various medical imaging tasks, making it suitable for this work~\cite{yoloreview}.
+\subsection{Training Procedure} % Tobi
+The training process consists of two stages: (1) GAN training and (2) object detector training. First, the CycleGAN is trained on the LUNA16 dataset to generate synthetic chest CT images. The synthetic images are combined with the original images to create a augmented dataset. Next, YOLO11 is trained in three settings: (1) using only the original LUNA16 dataset, (2) using the augmented dataset and (3) only using GAN-generated CT images. To increase generalizability, additional data augmentation such as rotation, scaling, and noise injection are applied in the training process.
+\subsection{Evaluation} % Tobi
+The performance of YOLO11 is evaluated using standard metrics for object detection~\cite{odmetrics}. These include:
+\begin{itemize}
+    \item \textbf{Intersection over Union:} Measures the overlap between two regions by dividing the area of their intersection by the area of their union.
+    \item \textbf{Average Precision:} Measures the accuracy by calculating the area under the precision-recall curve.
+\end{itemize}

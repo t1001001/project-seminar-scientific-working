@@ -30,7 +30,7 @@
 \author{Tobias Nguyen\inst{1} \and
 Cumali Karaali\inst{2}}
 %
-\authorrunning{F. Author et al.}
+\authorrunning{Nguyen \& Karaali}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
@@ -51,50 +51,13 @@ Aalen University, Beethovenstr. 1, 73430 Aalen \\
 %
 %
 % ------------------------------------------------------------
-\section{Introduction} % Cumi
-Object detection in computed tomography (CT) plays a crucial role in reinforcing diagnostic accuracy and clinical decision-making. However, object detection models, especially in sensitive fields like medical imaging, often face the problem of having too little usable labeled data, or it is very difficult to access such data due to privacy regulations, costs, and other restrictions. As a result, models trained on small or unbalanced datasets tend to overfit and perform poorly when generalizing to new test data. To address this issue, we make use of Generative Adversarial Networks (GANs)\cite{goodfellow2014gan}, which can generate synthetic data to improve model training.
-\subsection{Novelty \& Expected Contributions} % Cumi
-This paper aims to support the medical sector in data analysis by analyzing how GAN-based data augmentation affects object detection in CT imaging. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images. The expected contributions of this work include:
-\begin{itemize}
-\item[--] Empirical evaluation of GAN-generated CT images for improving object detection model performance.
-
-\item[--] Quantitative comparison between models trained on original and augmented datasets using standard object detection metrics.
-
-\item[--] Insights into the generalization potential of GAN-based augmentation for limited medical datasets.
-
-\item[--] Guidelines for future research on integrating synthetic data into medical AI pipelines.
-\end{itemize}
-\subsection{Research Question} % Tobi
-This work adresses the tollowing question: \\
-\textbf{CycleGAN-generated chest CT images improve object detection accuracy when real data is limited?}
+\input{01-introduction}
 % ------------------------------------------------------------
-\section{Related Work}
-\subsection{GANs in Medical Imaging} % Tobi
-GANs have become an effective tool in medical imaging for image synthesis, segmentation and classification. Frid-Adar et al.~\cite{frid2018gan} demonstrated that GAN-generated synthetic CT images of liver lesions improved classification. Sandfort et al.~\cite{sandfort2019data} utilized CycleGAN to adapt between contrast and non-contrast CT images, improving segmentation performance. Singh and Raza~\cite{singh2021medical} reviewed GAN architectures and emphasized their potential to overcome data scarcity. However, few studies have utilized GANs directly to object detection.
-\subsection{Object Detection in Medical Imaging} % Tobi
-Deep learning-based approaches have seen widespread use in medical object detection~\cite{albuquerque2025deep}\cite{yang2021artificial}. However, performance is limited due to the low availability of annotated medical images. To overcome this data scarcity, GAN-generated images can be generated to augment scarce datasets.
-\subsection{Positioning of this Work} % Tobi
-While GAN-based data augmentation has proven effective for image classification and segmentation, its impact on object detection is underexplored. This work adresses the gap by applying GAN-generated CT images to augment a medical images dataset and evaluate their effect on object detection performance.
-
+\input{02-related-work}
 % ------------------------------------------------------------
-\section{Methodology} % Tobi
-\subsection{Dataset description} % Tobi
-The LUNA16 dataset is a benchmark medical imaging dataset for lung nodule detection. It consists of 888 chest CT scans and is derived from the LIDC-IDRI dataset~\cite{luna16}.
-\subsection{GAN Model} % Tobi
-We utilize a CycleGAN architecture to generate realistic synthetic chest CT images for data augmentation. CycleGAN consists of two generator and discriminator networks, enabling unpaired image-to-image translation~\cite{zhu2020unpairedimagetoimagetranslationusing}. CycleGAN has shown strong performance in medical image synthesis tasks~\cite{cycleganeaugmentation}\cite{sandfort2019data}.
-\subsection{Object Detection Model} % Tobi
-For the object detection task, we utilize the YOLO11 architecture, which represents the latest advancement in the YOLO familiy~\cite{yolo11}. YOLO has demonstrated strong capabilities in various medical imaging tasks, making it suitable for this work~\cite{yoloreview}.
-\subsection{Training Procedure} % Tobi
-The training process consists of two stages: (1) GAN training and (2) object detector training. First, the CycleGAN is trained on the LUNA16 dataset to generate synthetic chest CT images. The synthetic images are combined with the original images to create a augmented dataset. Next, YOLO11 is trained in two settings: (1) using only the original LUNA16 dataset and (2) using the augmented dataset.
-\subsection{Evaluation} % Tobi
-The performance of YOLO11 is evaluated using standard metrics for object detection~\cite{odmetrics}. These include:
-\begin{itemize}
-    \item \textbf{Intersection over Union:} Measures the overlap between two regions by dividing the area of their intersection by the area of their union.
-    \item \textbf{Average Precision:} Measures the accuracy by calculating the area under the precision-recall curve.
-\end{itemize}
+\input{03-methodology}
 % ------------------------------------------------------------
-\section{Expected Results} % Cumi
-We expect that the object detection model trained on the augmented dataset with GAN-generated CT images will achieve noticable improvement in performance compared to training on the original data alone. We also anticipate higher detection accuracy and better generalization because the synthetic images offer greater diversity into the training set. In the end, the results should provide insight into whether GAN-based augmentation is a practical and effective metho for addressing data scarcity in medical imaging.
+\input{04-expected-results}
 %
 % ---- Bibliography ----
 %

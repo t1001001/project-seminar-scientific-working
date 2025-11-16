@@ -52,9 +52,9 @@ Aalen University, Beethovenstr. 1, 73430 Aalen \\
 %
 % ------------------------------------------------------------
 \section{Introduction} % Cumi
-Object detection models, especially in sensitive fields like medical imaging (CT images), often face the problem of having too little usable labeled data, or it is very difficult to access such data due to privacy regulations, costs, and other restrictions. As a result, models trained on small or unbalanced datasets tend to overfit and perform poorly when generalizing to new test data. To address this issue, we make use of Generative Adversarial Networks (GANs), which can generate synthetic data to improve model training.
+Object detection in computed tomography (CT) plays a crucial role in reinforcing diagnostic accuracy and clinical decision-making. However, object detection models, especially in sensitive fields like medical imaging, often face the problem of having too little usable labeled data, or it is very difficult to access such data due to privacy regulations, costs, and other restrictions. As a result, models trained on small or unbalanced datasets tend to overfit and perform poorly when generalizing to new test data. To address this issue, we make use of Generative Adversarial Networks (GANs)\cite{goodfellow2014gan}, which can generate synthetic data to improve model training.
 \subsection{Novelty \& Expected Contributions} % Cumi
-This paper aims to support the medical sector in data analysis by providing one of the few evaluations of GAN-based data augmentation for object detection in CT imaging. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images.
+This paper aims to support the medical sector in data analysis by analyzing how GAN-based data augmentation affects object detection in CT imaging. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images. The expected contributions of this work include:
 \begin{itemize}
 \item[--] Empirical evaluation of GAN-generated CT images for improving object detection model performance.
 

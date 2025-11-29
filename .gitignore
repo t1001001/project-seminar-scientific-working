@@ -218,3 +218,7 @@ main.pdf
 main.bbl
 main.blg
 *.aux
+
+# Code
+code/data
+code/wget-log

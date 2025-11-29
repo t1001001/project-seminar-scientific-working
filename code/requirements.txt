@@ -1,0 +1,32 @@
+# Core Python
+numpy
+pandas
+matplotlib
+tqdm
+scikit-image
+opencv-python
+
+# Medical imaging
+SimpleITK
+pydicom
+
+# PyTorch (+ dependencies for CycleGAN and YOLO)
+torch
+torchvision
+torchaudio
+
+# YOLOv11 (Ultralytics)
+ultralytics
+
+# CycleGAN repo requirements (if using Jun-Yan Zhu repo)
+dominate
+visdom
+
+# Notebooks
+jupyter
+notebook
+jupyterlab
+
+# Misc utilities
+PyYAML
+seaborn

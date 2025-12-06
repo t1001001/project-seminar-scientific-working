@@ -2,10 +2,10 @@ import shutil
 from pathlib import Path
 import utils.config as conf
 
-DATASET_PATH = f"{conf.ROOT}/raw"
+DATASET_PATH = f"{conf.ROOT}/data"
 
 def cleanup():
-    folder = Path(DATASET_PATH) / "luna16"
+    folder = Path(DATASET_PATH) / "raw"
     if folder.exists():
         shutil.rmtree(folder)
         print(f"Deleted folder: {folder}")

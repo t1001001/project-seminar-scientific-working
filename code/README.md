@@ -49,3 +49,12 @@ uv pip install -r requirements.txt
 ```bash
 uv pip install -e .
 ```
+
+## Project setup
+```bash
+# Run the download script to get the dataset
+bash download.sh
+
+# Run the project
+project
+```

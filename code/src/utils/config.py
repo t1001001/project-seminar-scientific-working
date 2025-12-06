@@ -1,4 +1,4 @@
-from src.utils.get_root_path import get_root_path
+from utils.get_root_path import get_root_path
 from typing import Final
 
 ROOT: Final = get_root_path()

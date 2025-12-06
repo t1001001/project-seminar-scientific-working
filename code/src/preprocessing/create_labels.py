@@ -3,7 +3,7 @@ import csv
 import numpy as np
 import SimpleITK as sitk
 from tqdm import tqdm
-import src.utils.config as conf
+import utils.config as conf
 
 RAW_DIR = f"{conf.ROOT}/data/raw/luna16"
 IMG_DIR = f"{conf.ROOT}/data/preprocessed/images"

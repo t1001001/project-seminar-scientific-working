@@ -3,7 +3,7 @@ import SimpleITK as sitk
 import numpy as np
 import cv2
 from tqdm import tqdm
-import src.utils.config as conf
+import utils.config as conf
 
 RAW_DIR = f"{conf.ROOT}/data/raw/luna16"
 OUT_DIR = f"{conf.ROOT}/data/preprocessed"

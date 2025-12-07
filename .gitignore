@@ -222,3 +222,6 @@ main.blg
 # Code
 code/data
 code/wget-log
+
+yolo11n.pt
+runs/

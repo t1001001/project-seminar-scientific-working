@@ -1,0 +1,25 @@
+import os
+import subprocess
+import utils.config as conf
+
+DATASET = f"{conf.ROOT}/data/cyclegan"
+NAME = "luna_cyclegan"
+EPOCHS = 50
+CYCLEGAN_REPO = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "train.py")
+
+def train_cyclegan():
+    print("Starting CycleGAN training...")
+    cmd = [
+        "python", CYCLEGAN_REPO,
+        "--dataroot", DATASET,
+        "--name", NAME,
+        "--model", "cycle_gan",
+        "--n_epochs", str(EPOCHS),
+        "--n_epochs_decay", str(EPOCHS)
+    ]
+    print("Running:", " ".join(cmd))
+    subprocess.run(cmd, check=True)
+    print("CycleGAN training complete!")
+
+if __name__ == "__main__":
+    train_cyclegan()

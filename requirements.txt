@@ -30,3 +30,4 @@ jupyterlab
 # Misc utilities
 PyYAML
 seaborn
+wandb

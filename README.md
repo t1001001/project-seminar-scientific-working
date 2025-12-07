@@ -55,6 +55,12 @@ uv pip install -e .
 # Run the download script to get the dataset
 bash download.sh
 
+# Switch into the code folder
+cd code
+
+# Fork the CycleGAN repository
+git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git
+
 # Run the project
 project
 ```

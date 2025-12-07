@@ -223,5 +223,8 @@ main.blg
 code/data
 code/wget-log
 
+# Misc
 yolo11n.pt
 runs/
+pytorch-CycleGAN-and-pix2pix
+checkpoints/

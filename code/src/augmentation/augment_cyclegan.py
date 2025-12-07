@@ -6,12 +6,13 @@ import utils.config as conf
 DATASET = f"{conf.ROOT}/data/cyclegan"
 NAME = "luna_cyclegan"
 OUT_DIR = Path(f"{conf.ROOT}/data/cyclegan/generated")
+CYCLEGAN_REPO = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "test.py")
 
 def augment_cyclegan():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     print("Generating synthetic CT images using CycleGAN...")
     cmd = [
-        "python", "pytorch-CycleGAN-and-pix2pix/test.py",
+        "python", CYCLEGAN_REPO,
         "--dataroot", DATASET,
         "--name", NAME,
         "--model", "cycle_gan",

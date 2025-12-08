@@ -6,11 +6,13 @@ from cyclegan.train_cyclegan import train_cyclegan
 from cyclegan.train_aug_cyclegan import train_aug_cyclegan
 from augmentation.augment_cyclegan import augment_cyclegan
 from augmentation.augment_yolo import augment_yolo
+from yolo.yolo import yolo
 
 def main():
     extract_all()
     create_all_labels()
     cleanup()
+    yolo()
     prepare_cyclegan()
     train_cyclegan()
     augment_cyclegan()

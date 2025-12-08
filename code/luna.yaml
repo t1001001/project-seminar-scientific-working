@@ -1,4 +1,0 @@
-train: /home/tobia/repos/project-seminar-scientific-working/code/data/yolo/baseline/images/train
-val: /home/tobia/repos/project-seminar-scientific-working/code/data/yolo/baseline/images/val
-nc: 1
-names: ["nodule"]

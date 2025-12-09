@@ -17,8 +17,7 @@ def train_cyclegan():
         "--n_epochs", str(EPOCHS),
         "--n_epochs_decay", str(EPOCHS),
         "--max_dataset_size", "2000",
-        "--batch_size", "8",
-        "--num_threads", "8"
+        "--num_threads", "0",
     ]
     print("Running:", " ".join(cmd))
     subprocess.run(cmd, check=True)

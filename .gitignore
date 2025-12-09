@@ -228,3 +228,5 @@ yolo11n.pt
 runs/
 pytorch-CycleGAN-and-pix2pix
 checkpoints/
+results/
+*.yaml

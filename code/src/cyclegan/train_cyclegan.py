@@ -4,7 +4,7 @@ import utils.config as conf
 
 DATASET = f"{conf.ROOT}/data/cyclegan"
 NAME = "luna_cyclegan"
-EPOCHS = 5
+EPOCHS = 50
 CYCLEGAN_REPO = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "train.py")
 
 def train_cyclegan():
@@ -14,8 +14,6 @@ def train_cyclegan():
         "--dataroot", DATASET,
         "--name", NAME,
         "--model", "cycle_gan",
-        "--n_epochs", str(EPOCHS),
-        "--n_epochs_decay", str(EPOCHS),
         "--max_dataset_size", "2000",
         "--num_threads", "0",
     ]

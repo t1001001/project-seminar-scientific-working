@@ -3,13 +3,14 @@ import shutil
 from pathlib import Path
 import random
 from tqdm import tqdm
+import utils.config as conf
 
-REAL_IMG_DIR = Path("data/preprocessed/images")
-REAL_LBL_DIR = Path("data/preprocessed/labels")
+REAL_IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
+REAL_LBL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
 
-SYN_DIR = Path("data/cyclegan/generated")
+SYN_DIR = Path(f"{conf.ROOT}/data/cyclegan/generated")
 
-OUT_DIR = Path("data/yolo/cyclegan_aug")
+OUT_DIR = Path(f"{conf.ROOT}/data/yolo/cyclegan_aug")
 
 TRAIN_SPLIT = 0.8
 IMG_EXT = ".png"

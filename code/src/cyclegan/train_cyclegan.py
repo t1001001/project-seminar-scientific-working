@@ -14,8 +14,8 @@ def train_cyclegan():
         "--dataroot", DATASET,
         "--name", NAME,
         "--model", "cycle_gan",
-        "--n_epochs", EPOCHS,
-        "--n_epochs_decay", EPOCHS,
+        "--n_epochs", str(EPOCHS),
+        "--n_epochs_decay", str(EPOCHS),
         "--max_dataset_size", "2000",
         "--num_threads", "0",
     ]

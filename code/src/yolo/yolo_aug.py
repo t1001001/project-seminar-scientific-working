@@ -21,7 +21,7 @@ names: ["nodule"]
         f.write(content.strip())
     print("YAML created.")
 
-def train_aug_cyclegan():
+def yolo_aug():
     create_yaml()
     print("Training YOLOv11 on CycleGAN-Augmented Dataset")
     model = YOLO("yolo11n.pt")
@@ -30,8 +30,8 @@ def train_aug_cyclegan():
         epochs=50,
         imgsz=512,
         batch=32,
-        name="luna11_cyclegan_aug"
+        name="luna16_cyclegan_aug"
     )
 
 if __name__ == "__main__":
-    train_aug_cyclegan()
+    yolo_aug()

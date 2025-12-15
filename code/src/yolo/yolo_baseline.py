@@ -80,11 +80,11 @@ def train_yolo():
         epochs=EPOCHS,
         imgsz=IMG_SIZE,
         batch=BATCH,
-        name="luna11_baseline"
+        name="luna16_baseline"
     )
     print("Training complete!")
 
-def yolo():
+def yolo_baseline():
     print("YOLO Dataset Builder + Trainer")
     build_yolo_folders()
     pairs = collect_image_label_pairs()
@@ -99,4 +99,4 @@ def yolo():
     print("ALL DONE")
 
 if __name__ == "__main__":
-    yolo()
+    yolo_baseline()

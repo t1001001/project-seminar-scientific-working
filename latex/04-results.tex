@@ -1,0 +1,20 @@
+\section{Preliminary Results} % Cumi
+\subsection{Quantitative Results} % Tobi
+Preliminary evaluation show the following results:
+\begin{itemize} 
+    \item \textbf{Baseline YOLO11 (real data only):} 
+\begin{itemize} 
+    \item AP@0.5: \textbf{0.88}
+    \item AP@0.5:0.95: \textbf{0.503 }
+    \item Mean IoU (True Positives): \textbf{0.727}
+    \end{itemize} 
+\item \textbf{YOLO11 with CycleGAN-augmented data:} 
+\begin{itemize} 
+    \item AP@0.5: \textbf{0.842}
+    \item AP@0.5:0.95: \textbf{0.474}
+    \item Mean IoU (True Positives): \textbf{0.716}
+    \end{itemize} 
+\end{itemize}
+\subsection{Initial Observations}
+The baseline model outperforms the CycleGAN-augmented model across all evaluated metrics. This suggests that CycleGAN-based augmentation does not improve, but may slightly degrade object detection performance in this experimental setting. \\
+\textbf{TODO: Conduct experiments on purely synthetic dataset.}

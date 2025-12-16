@@ -1,2 +1,4 @@
 \section{Limitations}
-This work has several limitations. First, the evaluation is limited to a single dataset and a single GAN architecture. Second, only one object detection model is considered and lastly, the realism of GAN-generated images is not assessed by domain experts. 
+This work has several limitations. The evaluation is limited to a single dataset (LUNA16), a single GAN architecture (CycleGAN) and only one object detection model (YOLO11), which limits the generalizability of the findings. \\
+Furthermore, the experiments are conducted on two-dimensional CT clices rather than full three-dimensional slices, neglecting inter-slice contextual information that may be relevant for pulmonary nodule detection. Additionaly, while CycleGAN-based augmentation increases appearance variability, it does not explicitly model geometric variations, which are critical for accurate object localization. \\
+Lastly, the realism of GAN-generated images is not assessed by clinical experts.

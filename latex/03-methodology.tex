@@ -5,7 +5,7 @@ The experiments are conducted on the LUNA16 dataset, a benchmark medical imaging
 \subsection{GAN-based Data Augmentation} % Tobi
 We utilize a CycleGAN architecture to generate realistic synthetic chest CT images for data augmentation. CycleGAN is used to introduce appearance-level variability in CT images, such as changes in texture and contrast, while preserving overall anatomical structure. Training is performed for 50 epochs with an additional 50 epochs of linear learning rate decay. To reduce computational complexity, the training dataset is capped at 2000 images. The default CycleGAN architecture and loss formulation are used, including adversarial loss and cycle-consistency loss. After training, the generator produces synthetic images that resemble real CT scans and are incorporated into the dataset to augment it
 \subsection{Object Detection Model} % Tobi
-For pulmonary nodule detection, we utilize the YOLO11 object detection framework, which represents the latest advancement in the YOLO familiy~\cite{yolo11}. The detector is initialized with pretrained weights and fine-tuned on the LUNA16 dataset. YOLO11 is trained for 50 epochs using an input resolution of 512×512 pixels and a batch size of 32. All experiments are conducted using identical training settings to ensure a fair comparison.
+For pulmonary nodule detection, we utilize the YOLO11 object detection framework, which represents the latest advancement in the YOLO family~\cite{yolo11}. The detector is initialized with pretrained weights and fine-tuned on the LUNA16 dataset. YOLO11 is trained for 50 epochs using an input resolution of 512×512 pixels and a batch size of 32. All experiments are conducted using identical training settings to ensure a fair comparison.
 \subsection{Training Procedure} % Tobi
 The overall training pipeline consists of two sequential stages. First, the CycleGAN is trained to generate synthetic CT images from the original dataset. Second, the YOLO11 detector is trained using different settings of training data.
 Three training configurations are evaluated:
@@ -14,7 +14,7 @@ Three training configurations are evaluated:
     \item Training on a combination of real and CycleGAN-generated images.
     \item Training on CycleGAN-generated images only.
 \end{itemize}
-All models are trained using identical optimazation settings, including learning rates, batch sizes and number of epochs, to ensure a fair comparison.
+All models are trained using identical optimization settings, including learning rates, batch sizes and number of epochs, to ensure a fair comparison.
 \subsection{Evaluation} % Tobi
 The performance of YOLO11 is evaluated using standard metrics for object detection~\cite{odmetrics}. These include:
 \begin{itemize}

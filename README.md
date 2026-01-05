@@ -61,9 +61,6 @@ cd code
 # Fork the CycleGAN repository
 git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git
 
-# Prepare the data
-python prepare_data.py
-
 # Run the project
 project
 ```

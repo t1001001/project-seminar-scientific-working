@@ -1,6 +1,5 @@
-import os
+import json
 import shutil
-import random
 from pathlib import Path
 from ultralytics import YOLO
 import utils.config as conf
@@ -8,19 +7,24 @@ import utils.config as conf
 PRE_IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
 PRE_LABEL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
 YOLO_DATA_DIR = Path(f"{conf.ROOT}/data/yolo/baseline")
+SPLIT_PATH = Path(f"{conf.ROOT}/data/split.json")
+YAML_PATH = Path(f"{conf.ROOT}/baseline.yaml")
 
-TRAIN_SPLIT = 0.8
-IMG_EXT = ".png"
-LBL_EXT = ".txt"
-
-YAML_PATH = Path(f"{conf.ROOT}/luna.yaml")
 WEIGHTS = "yolo11n.pt"
 EPOCHS = 50
 IMG_SIZE = 512
 BATCH = 32
+IMG_EXT = ".png"
+LBL_EXT = ".txt"
 
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
+
+def load_split():
+    if not SPLIT_PATH.exists():
+        raise FileNotFoundError("split.json not found. Run make_split.py first.")
+    with open(SPLIT_PATH) as f:
+        return json.load(f)
 
 def build_yolo_folders():
     print("Creating YOLO directory structure...")
@@ -30,38 +34,24 @@ def build_yolo_folders():
     print("Done.")
 
 def collect_image_label_pairs():
-    print("Collecting image–label pairs...")
-    image_paths = []
+    pairs = []
     for scan_folder in PRE_IMG_DIR.iterdir():
         if scan_folder.is_dir():
-            for img_file in scan_folder.glob(f"*{IMG_EXT}"):
-                lbl_file = PRE_LABEL_DIR / scan_folder.name / img_file.name.replace(IMG_EXT, LBL_EXT)
-                if lbl_file.exists():
-                    image_paths.append((img_file, lbl_file))
-    print(f"Found {len(image_paths)} slice–label pairs.")
-    return image_paths
+            for img_path in scan_folder.glob(f"*{IMG_EXT}"):
+                lbl_path = PRE_LABEL_DIR / scan_folder.name / img_path.name.replace(IMG_EXT, LBL_EXT)
+                if lbl_path.exists():
+                    pairs.append((img_path, lbl_path))
+    return pairs
 
-def split_dataset(pairs):
-    print("Splitting into train/val...")
-    random.shuffle(pairs)
-    split_idx = int(len(pairs) * TRAIN_SPLIT)
-    train_pairs = pairs[:split_idx]
-    val_pairs = pairs[split_idx:]
-    print(f"Training: {len(train_pairs)} | Validation: {len(val_pairs)}")
-    return train_pairs, val_pairs
-
-def copy_pairs(pairs, split):
-    print(f"Copying {split} set...")
-    img_out = YOLO_DATA_DIR / "images" / split
-    lbl_out = YOLO_DATA_DIR / "labels" / split
+def copy_pairs(pairs, split_name):
+    img_out = YOLO_DATA_DIR / "images" / split_name
+    lbl_out = YOLO_DATA_DIR / "labels" / split_name
     for img_path, lbl_path in pairs:
         shutil.copy(img_path, img_out / img_path.name)
         shutil.copy(lbl_path, lbl_out / lbl_path.name)
-    print(f"Copied {len(pairs)} files to {split}/.")
+    print(f"Copied {len(pairs)} files to {split_name}/")
 
 def create_yaml():
-    print(f"Creating dataset YAML: {YAML_PATH}")
-    ensure_dir(YAML_PATH.parent)
     content = f"""
 train: {YOLO_DATA_DIR}/images/train
 val: {YOLO_DATA_DIR}/images/val
@@ -73,22 +63,39 @@ names: ["nodule"]
     print("YAML created.")
 
 def train_yolo():
-    print("Starting YOLOv11 training...")
+    print("Starting YOLOv11 baseline training...")
     model = YOLO(WEIGHTS)
     model.train(
         data=str(YAML_PATH),
         epochs=EPOCHS,
         imgsz=IMG_SIZE,
         batch=BATCH,
-        name="luna16_baseline"
+        name="baseline"
     )
-    print("Training complete!")
+    print("Training complete.")
 
 def yolo_baseline():
-    print("YOLO Dataset Builder + Trainer")
+    print("\n=== YOLO Baseline (Experiment A) ===")
+
+    split = load_split()
     build_yolo_folders()
+
     pairs = collect_image_label_pairs()
-    train_pairs, val_pairs = split_dataset(pairs)
+
+    train_pairs = []
+    val_pairs = []
+
+    for img_path, lbl_path in pairs:
+        if img_path.name in split["train"]:
+            train_pairs.append((img_path, lbl_path))
+        elif img_path.name in split["val"]:
+            val_pairs.append((img_path, lbl_path))
+
+    assert len(train_pairs) > 0, "No training samples found!"
+    assert len(val_pairs) > 0, "No validation samples found!"
+
+    print(f"Train samples: {len(train_pairs)}")
+    print(f"Val samples: {len(val_pairs)}")
 
     copy_pairs(train_pairs, "train")
     copy_pairs(val_pairs, "val")
@@ -96,7 +103,7 @@ def yolo_baseline():
     create_yaml()
     train_yolo()
 
-    print("ALL DONE")
+    print("=== EXPERIMENT A DONE ===\n")
 
 if __name__ == "__main__":
     yolo_baseline()

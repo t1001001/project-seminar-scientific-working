@@ -1,4 +1,3 @@
 \section{Discussion}
-The preliminary results contrast with prior findings in medical image classification and segmentation, where GAN-based augmentation often improve performance. One possible explaination is that object detection requires spatial localization, making it more sensitive to geometric inconsistencies in synthesis images. These inconsistencies may negatively impact the learning of drawing accurate bounding boxes and consequently degrade object detection performance.
-\\
-\textbf{TODO: Finish this section.}
+The experimental results indicate that neither classical augmentation nor CycleGAN-based augmentation substantially improve pulmonary nodule detection performance. While CycleGAN-based augmentation introduces additional appearance diversity, this does not translate into meaningful improvements in detection performance.\\
+Object detection performance relies on accurate spatial localization between images and bounding box annotations. Although CycleGAN preserves global anatomical structure, appearance-level augmentations may introduce subtle inconsistencies, limiting potential benefits for bounding box regression. As a result, CycleGAN-generated data neither significantly enhances or degrades model performance. 

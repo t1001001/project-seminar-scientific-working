@@ -1,15 +1,14 @@
 \section{Introduction} % Cumi
 Object detection in computed tomography (CT) plays a crucial role in reinforcing diagnostic accuracy and clinical decision-making. In the last few years, deep learning-based object detection frameworks like \textbf{You Only Look Once (YOLO)} have shown solid performance in many imaging tasks because of their efficiency and real-time detection capabilities \cite{yolo11}\cite{yoloreview}. However, object detection models, especially in sensitive fields like medical imaging, often face the problem of having too little usable labeled data, or it is very difficult to access such data due to privacy regulations, costs, and other restrictions. As a result, models trained on small or unbalanced datasets tend to overfit and perform poorly when generalizing to new test data. To address this issue, we make use of \textbf{Generative Adversarial Networks (GANs)}, introduced by Goodfellow et al. \cite{goodfellow2014gan}, which can generate synthetic data to improve model training. Researchers such as Frid-Adar and Sandfort have shown that GAN-based augmentation can significantly improve classification and segmentation performance in CT-imaging\cite{frid2018gan}\cite{sandfort2019data}. CycleGAN-based augmentation has also been applied to YOLO-based multi-organ detection in CT scans \cite{cycleganeaugmentation}. 
-\subsection{Novelty \& Expected Contributions} % Cumi
-This paper aims to support the medical sector in data analysis by analyzing how GAN-based data augmentation affects object detection in CT imaging. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images. The expected contributions of this work include:
+\subsection{Novelty \& Contributions} % Cumi
+This work aims to analyze the effectiveness of GAN-based data augmentation in medical object detection. The novelty of this work lies in a comparative approach, analyzing the performance differences between object detection models trained on original datasets and those trained on datasets augmented with GAN-generated CT images. The expected contributions of this work include:
 \begin{itemize}
-\item[--] Empirical evaluation of GAN-generated CT images for improving object detection model performance.
+\item[--] Empirical evaluation of GAN-based augmentation for medical object detection model performance.
 
-\item[--] Quantitative comparison between models trained on original, augmented and purely synthetic datasets using standard object detection metrics.
+\item[--] Quantitative comparison between baseline training, classical augmentation, GAN-based augmentation and their combination using standard object detection metrics.
 
-\item[--] Insights into the generalization potential of GAN-based augmentation for limited medical datasets.
+\item[--] Insights into the limitations of GAN-based augmentation for medical object detection.
 
-\item[--] Guidelines for future research on integrating synthetic data into medical AI pipelines.
 \end{itemize}
 \subsection{Research Question} % Tobi
 This work addresses the following question: \\

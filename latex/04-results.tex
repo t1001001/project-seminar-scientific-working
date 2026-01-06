@@ -1,5 +1,5 @@
-\section{Preliminary Results}
-Preliminary evaluation shows the following results:
+\section{Results}
+The evaluation of all four settings show the following results:
 \begin{table}[H]
 \centering
 \caption{Performance comparison between baseline YOLO11 and CycleGAN-augmented training}
@@ -7,11 +7,12 @@ Preliminary evaluation shows the following results:
 \hline
 \textbf{Model} & \textbf{AP@0.5} & \textbf{AP@0.5:0.95} & \textbf{Mean IoU} \\
 \hline
-LUNA16 (Baseline) & 0.88 & 0.503 & 0.727 \\
-LUNA16 (CycleGAN-augmented) & 0.842 & 0.474 & 0.716 \\
+Baseline & 0.798 & 0.437 & 0.716 \\
+Baseline Augmented & 0.800 & 0.442 & 0.726 \\
+CycleGAN & 0.798 & 0.428 & 0.707 \\
+CycleGAN Augmented & 0.805 & 0.443 & 0.713 \\
 \hline
 \end{tabular}
 \end{table}
 \noindent
-The baseline model outperforms the CycleGAN-augmented model across all evaluated metrics. This suggests that CycleGAN-based augmentation does not improve, and may slightly degrade, object detection performance in this experimental setting. \\
-\textbf{TODO: Conduct experiments on a purely synthetic dataset.}
+Across all four settings, detection performance remains mostly consistent. The CycleGAN-augmented model have slightly higher AP@0.5 and AP@0.5:0.95 values. However, these gains are marginal and accompanied by a minor decrease in mean IoU.

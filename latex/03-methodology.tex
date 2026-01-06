@@ -2,17 +2,20 @@
 The following methodology description provides an overview of the experimental setup. It includes the dataset preparation, the synthetic image generation process, the object detection model, and the evaluation.
 \subsection{Dataset} % Tobi
 The experiments are conducted on the LUNA16 dataset, a benchmark medical imaging dataset for pulmonary nodule detection derived from the LIDC-IDRI dataset~\cite{luna16}. It contains 888 chest CT scans where each scan is annotated by multiple radiologists. For this work, CT scans are processed into two-dimensional slices containing annotated nodules. Bounding box annotations are generated from the provided nodule masks. During preprocessing, a small number of images with invalid annotations were automatically excluded to ensure label consistency. The resulting dataset is split into training and validation subsets, where 80\% of the data is used for training and the remaining 20\% is reserved for validation.
+\subsection{Classical Data Augmentation}
+Classical data augmentation was applied to two of the training settings and was limited to annotation-preserving augmentations. These included intensity scaling and contrast adjustment to simulate variations in CT conditions. Geometric augmentations such as rotation, flipping, scaling, or cropping were avoided to prevent spatial misalignment between images and bounding box annotations. These augmentations preserve bounding box geometry and do not require changes to annotation coordinates.
 \subsection{GAN-based Data Augmentation} % Tobi
-We utilize a CycleGAN architecture to generate realistic synthetic chest CT images for data augmentation. CycleGAN is used to introduce appearance-level variability in CT images, such as changes in texture and contrast, while preserving overall anatomical structure. Training is performed for 50 epochs with an additional 50 epochs of linear learning rate decay. To reduce computational complexity, the training dataset is capped at 2000 images. The default CycleGAN architecture and loss formulation are used, including adversarial loss and cycle-consistency loss. After training, the generator produces synthetic images that resemble real CT scans and are incorporated into the dataset to augment it
+We utilize a CycleGAN architecture to generate realistic synthetic chest CT images for data augmentation. CycleGAN is used to introduce appearance-level variability in CT images, such as changes in texture and contrast, while preserving overall anatomical structure. Training is performed for 50 epochs with an additional 50 epochs of linear learning rate decay. To reduce computational complexity, the training dataset is capped at 2000 images. The default CycleGAN architecture and loss formulation are used, including adversarial loss and cycle-consistency loss. After training, the generator produces synthetic images that resemble real CT scans and are incorporated into the dataset to augment it.
 \subsection{Object Detection Model} % Tobi
 For pulmonary nodule detection, we utilize the YOLO11 object detection framework, which represents the latest advancement in the YOLO family~\cite{yolo11}. The detector is initialized with pretrained weights and fine-tuned on the LUNA16 dataset. YOLO11 is trained for 50 epochs using an input resolution of 512×512 pixels and a batch size of 32. All experiments are conducted using identical training settings to ensure a fair comparison.
 \subsection{Training Procedure} % Tobi
 The overall training pipeline consists of two sequential stages. First, the CycleGAN is trained to generate synthetic CT images from the original dataset. Second, the YOLO11 detector is trained using different settings of training data.
-Three training configurations are evaluated:
+Four training settings are evaluated:
 \begin{itemize}
     \item Training on real images only (baseline).
+    \item Training on real images with classical augmentation.
     \item Training on a combination of real and CycleGAN-generated images.
-    \item Training on CycleGAN-generated images only.
+    \item Training on a combination of real images, classical augmentation, and CycleGAN-generated images.
 \end{itemize}
 All models are trained using identical optimization settings, including learning rates, batch sizes and number of epochs, to ensure a fair comparison.
 \subsection{Evaluation} % Tobi
@@ -24,4 +27,3 @@ The performance of YOLO11 is evaluated using standard metrics for object detecti
 We use an AP at an IoU of 0.5 and mean Average Precision (MAP) over IoU thresholds from 0.5 to 0.95. Additionally, Mean Intersection over Union (Mean IoU) is computed manually by matching predicted bounding boxes to ground-truth annotations. Furthermore, the Mean IoU is restricted to only be computed to true positive detections to better isolate localization quality.
 
 \noindent
-\textbf{TODO: Add figure that shows the training pipeline and conduct training on purely synthetic data.}

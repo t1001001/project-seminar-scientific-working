@@ -45,9 +45,11 @@ Aalen University, Beethovenstr. 1, 73430 Aalen \\
 \begin{abstract}
 The limited availability of annotated medical imaging data is a major challenge for deep-learning based object detection. Generative Adversarial Networks have been proposed as a potential solution by generating synthetic images for data augmentation and have shown promising results in medical image classification and segmentation. However, their effectiveness in object detection remains underexplored.
 
-This work investigates the impact of CycleGAN-based data augmentation on pulmonary nodule detection in chest CT images. Experiments are conducted on the LUNA16 dataset using the YOLO11 object detection framework. YOLO11 is trained on real data only is compared to YOLO11 trained on a combination of real and GAN-generated images and purely GAN-generated images. Detection performance is evaluated using Average Precision and Intersection over Union.
+This work investigates the impact of CycleGAN-based data augmentation on pulmonary nodule detection in chest CT images. Experiments are conducted on the LUNA16 dataset using the YOLO11 object detection framework. Four experimental settings are used: a baseline model trained on real data only, baseline training with classical augmentations, training on a combination of real and CycleGAN-generated images and a combination of classical and CycleGAN-based augmentation.
 
-Preliminary results show that the inclusion of CycleGAN-generated images does not improve detection performance and leads to slightly reduced localization accuracy. These findings suggest that augmentation strategies effective for classification and segmentation may not transfer to object detection.
+Experimental results show that the inclusion of CycleGAN-generated images does not consistently improve pulmonary nodule detection performance. While CycleGAN-based augmentation led to minor improvements in Average Precision, these improvements are comparable to those achieved using classical, annotation-preserving annotations and are accompanied by a minor decrease in localization performance.
+
+Overall, our findings indicate that GAN-based augmentation strategies effective for classification and segmentation tasks may provide limited benefit for object detection tasks.
 \keywords{Medical Object Detection, Generative Adversarial Networks, CycleGAN, YOLO, Data Augmentation}
 \end{abstract}
 %

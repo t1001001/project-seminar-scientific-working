@@ -13,7 +13,7 @@ MODELS = {
     "Cyclegan Augmented": f"{conf.ROOT.parent}/runs/detect/cyclegan_aug/weights/best.pt",
 }
 
-DATA_YAML = f"{conf.ROOT}/luna.yaml"
+DATA_YAML = f"{conf.ROOT}/baseline.yaml"
 
 VAL_IMAGES = f"{conf.ROOT}/data/yolo/baseline/images/val"
 VAL_LABELS = f"{conf.ROOT}/data/yolo/baseline/labels/val"

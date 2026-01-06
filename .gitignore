@@ -230,3 +230,4 @@ pytorch-CycleGAN-and-pix2pix
 checkpoints/
 results/
 *.yaml
+evaluation_results.csv

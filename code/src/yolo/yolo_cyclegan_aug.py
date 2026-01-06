@@ -9,7 +9,7 @@ import utils.config as conf
 PRE_IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
 PRE_LABEL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
 SYN_DIR = Path(f"{conf.ROOT}/data/cyclegan/generated")
-YOLO_DATA_DIR = Path(f"{conf.ROOT}/data/yolo/std_safe_cyc")
+YOLO_DATA_DIR = Path(f"{conf.ROOT}/data/yolo/cyclegan_aug")
 SPLIT_PATH = Path(f"{conf.ROOT}/data/split.json")
 YAML_PATH = Path(f"{conf.ROOT}/cyclegan_aug.yaml")
 

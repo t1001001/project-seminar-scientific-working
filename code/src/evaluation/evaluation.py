@@ -73,23 +73,28 @@ def evaluate(model_name, model_path):
     ap5095 = float(metrics.box.map)
     miou = mean_iou_yolo(model_path, VAL_IMAGES, VAL_LABELS, conf=CONF_THRES)
     print(f"{model_name}: AP50={ap50:.3f}, AP50-95={ap5095:.3f}, mIoU={miou:.3f}")
+    log_results(
+        {model_name: (ap50, ap5095, miou)}
+    )
     return ap50, ap5095, miou
 
 def log_results(results, csv_path=LOG_CSV):
-    with open(csv_path, "w", newline="") as f:
+    file_exists = os.path.isfile(csv_path)
+    with open(csv_path, "a", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Model", "AP50", "AP50-95", "mIoU"])
+        if not file_exists:
+            writer.writerow(["Model", "AP50", "AP50-95", "mIoU"])
         for name, (ap50, ap5095, miou) in results.items():
             writer.writerow([name, f"{ap50:.3f}", f"{ap5095:.3f}", f"{miou:.3f}"])
     print(f"Results saved to {csv_path}")
 
 if __name__ == "__main__":
     print("\n=== EVALUATION OF ALL EXPERIMENTS ===")
-    results = {}
-    for name, path in MODELS.items():
-        results[name] = evaluate(name, path)
-    print("\n=== SUMMARY TABLE ===")
-    print(f"{'Model':35s} AP@0.5   AP@0.5:0.95   Mean IoU")
-    for name, (ap50, ap5095, miou) in results.items():
-        print(f"{name:35s} {ap50:.3f}     {ap5095:.3f}         {miou:.3f}")
-    log_results(results)
+    MODELS = {
+    "Baseline": f"{conf.ROOT.parent}/runs/detect/baseline/weights/best.pt",
+    "Baseline Augmented": f"{conf.ROOT.parent}/runs/detect/baseline_aug/weights/best.pt",
+    "Cyclegan": f"{conf.ROOT.parent}/runs/detect/cyclegan/weights/best.pt",
+    "Cyclegan Augmented": f"{conf.ROOT.parent}/runs/detect/cyclegan_aug/weights/best.pt",
+    }
+    for name, model_path in MODELS.items():
+        evaluate(name, model_path)

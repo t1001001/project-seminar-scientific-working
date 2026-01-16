@@ -24,26 +24,33 @@ def prepare_cyclegan():
     print("Preparing CycleGAN datasets...")
     for sub in ["trainA", "trainB", "testA", "testB"]:
         ensure(CYCLEGAN_DIR / sub)
+
     all_slices = []
     for scan_folder in SOURCE_DIR.iterdir():
         if scan_folder.is_dir():
-            for img in scan_folder.glob("*.png"):
-                all_slices.append(img)
+            all_slices.extend(scan_folder.glob("*.png"))
+
     print(f"Found {len(all_slices)} slices.")
+    random.seed(42)  # deterministic split
+    all_slices = list(all_slices)
     random.shuffle(all_slices)
+
     split_idx = int(len(all_slices) * TRAIN_SPLIT)
     train_slices = all_slices[:split_idx]
     test_slices = all_slices[split_idx:]
+
     print("Building trainA/trainB...")
     for img_path in tqdm(train_slices):
-        shutil.copy(img_path, CYCLEGAN_DIR / "trainA" / img_path.name)
+        shutil.copy2(img_path, CYCLEGAN_DIR / "trainA" / img_path.name)
         styled = simple_style_transform(img_path)
         styled.save(CYCLEGAN_DIR / "trainB" / img_path.name)
+
     print("Building testA/testB...")
     for img_path in tqdm(test_slices):
-        shutil.copy(img_path, CYCLEGAN_DIR / "testA" / img_path.name)
+        shutil.copy2(img_path, CYCLEGAN_DIR / "testA" / img_path.name)
         styled = simple_style_transform(img_path)
         styled.save(CYCLEGAN_DIR / "testB" / img_path.name)
+
     print("CycleGAN data created!")
 
 if __name__ == "__main__":

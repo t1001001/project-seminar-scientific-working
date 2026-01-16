@@ -25,34 +25,51 @@ def load_split():
     with open(SPLIT_PATH) as f:
         return json.load(f)
 
+def find_image_by_name(name: str) -> Path | None:
+    matches = list(PRE_IMG_DIR.glob(f"*/{name}"))
+    return matches[0] if matches else None
+
+def find_label_by_name(name: str) -> Path | None:
+    matches = list(PRE_LABEL_DIR.glob(f"*/{name.replace(IMG_EXT, LBL_EXT)}"))
+    return matches[0] if matches else None
+
 def prepare_dataset():
     split = load_split()
     for folder in ["images/train", "images/val", "labels/train", "labels/val"]:
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
+
+    # Copy real train
     for name in split["train"]:
-        for scan_folder in PRE_IMG_DIR.iterdir():
-            img_file = scan_folder / name
-            lbl_file = PRE_LABEL_DIR / scan_folder.name / name.replace(".png", ".txt")
-            if img_file.exists() and lbl_file.exists():
-                shutil.copy(img_file, YOLO_DATA_DIR / "images/train" / name)
-                shutil.copy(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(".png", ".txt"))
-                break
+        img_file = find_image_by_name(name)
+        lbl_file = find_label_by_name(name)
+        if img_file is None or lbl_file is None:
+            continue
+        shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
+        shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
+
+        # Add CycleGAN image (train only)
         syn_file = SYN_DIR / name
         if syn_file.exists():
             out_name = f"cyc_{name}"
-            shutil.copy(syn_file, YOLO_DATA_DIR / "images/train" / out_name)
-            shutil.copy(lbl_file, YOLO_DATA_DIR / "labels/train" / out_name.replace(".png", ".txt"))
-    for name in split["val"]:
-        for scan_folder in PRE_IMG_DIR.iterdir():
-            img_file = scan_folder / name
-            lbl_file = PRE_LABEL_DIR / scan_folder.name / name.replace(".png", ".txt")
-            if img_file.exists() and lbl_file.exists():
-                shutil.copy(img_file, YOLO_DATA_DIR / "images/val" / name)
-                shutil.copy(lbl_file, YOLO_DATA_DIR / "labels/val" / name.replace(".png", ".txt"))
-                break
+            shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / out_name)
+            shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / out_name.replace(IMG_EXT, LBL_EXT))
 
-    print("Dataset prepared according to split.json")
+    # Copy real val
+    for name in split["val"]:
+        img_file = find_image_by_name(name)
+        lbl_file = find_label_by_name(name)
+        if img_file is None or lbl_file is None:
+            continue
+        shutil.copy2(img_file, YOLO_DATA_DIR / "images/val" / name)
+        shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/val" / name.replace(IMG_EXT, LBL_EXT))
+
+    # Consistency check
+    ti = len(list((YOLO_DATA_DIR / "images/train").glob(f"*{IMG_EXT}")))
+    tl = len(list((YOLO_DATA_DIR / "labels/train").glob(f"*{LBL_EXT}")))
+    vi = len(list((YOLO_DATA_DIR / "images/val").glob(f"*{IMG_EXT}")))
+    vl = len(list((YOLO_DATA_DIR / "labels/val").glob(f"*{LBL_EXT}")))
+    print(f"Prepared: train {ti} imgs/{tl} labels; val {vi} imgs/{vl} labels")
 
 def create_yaml():
     ensure_dir(YAML_PATH.parent)

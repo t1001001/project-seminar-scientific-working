@@ -47,9 +47,11 @@ def copy_pairs(pairs, split_name):
     img_out = YOLO_DATA_DIR / "images" / split_name
     lbl_out = YOLO_DATA_DIR / "labels" / split_name
     for img_path, lbl_path in pairs:
-        shutil.copy(img_path, img_out / img_path.name)
-        shutil.copy(lbl_path, lbl_out / lbl_path.name)
-    print(f"Copied {len(pairs)} files to {split_name}/")
+        shutil.copy2(img_path, img_out / img_path.name)
+        shutil.copy2(lbl_path, lbl_out / lbl_path.name)
+    ni = len(list(img_out.glob(f"*{IMG_EXT}")))
+    nl = len(list(lbl_out.glob(f"*{LBL_EXT}")))
+    print(f"Copied {len(pairs)} files to {split_name}/ (now {ni} imgs, {nl} labels)")
 
 def create_yaml():
     content = f"""

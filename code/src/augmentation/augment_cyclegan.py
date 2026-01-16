@@ -20,12 +20,19 @@ def augment_cyclegan():
         "--no_dropout"
     ]
     subprocess.run(cmd, check=True)
+
     results_dir = Path(f"pytorch-CycleGAN-and-pix2pix/results/{NAME}/test_latest/images")
     print("Copying generated images...")
+    count = 0
     for img in results_dir.glob("*.png"):
         target = OUT_DIR / img.name
         img.replace(target)
-    print("Synthetic images saved to data/cyclegan/generated!")
+        count += 1
+
+    if count == 0:
+        raise RuntimeError("No CycleGAN outputs found in results directory.")
+
+    print(f"Synthetic images saved to data/cyclegan/generated ({count} files).")
 
 if __name__ == "__main__":
     augment_cyclegan()

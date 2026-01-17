@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
+import utils.config as conf
 
-IMG_DIR = Path("data/preprocessed/images")
-OUT_LABEL_DIR = Path("data/preprocessed/labels")
+IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
+OUT_LABEL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
 
 def ensure_dir(p): p.mkdir(parents=True, exist_ok=True)
 

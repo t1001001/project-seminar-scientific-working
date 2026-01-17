@@ -34,29 +34,25 @@ source .venv/bin/activate  # macOS/Linux
 **Step 3: Install dependencies**
 
 ```bash
-# Install all dependencies from pyproject.toml
-uv sync
-
-# Or install with development dependencies
-uv sync --all-extras
-
-# Installation with pip if requirements.txt is used
+# Install all dependencies from requirements.txt
 uv pip install -r requirements.txt
 ```
 
 **Step 4: Install the package in editable mode**
 
 ```bash
+cd code
 uv pip install -e .
 ```
 
 ## Project setup
 ```bash
-# Run the download script to get the dataset
-bash download.sh
-
 # Switch into the code folder
 cd code
+
+# Run the download script to get the dataset
+# Please note that not all Operating Systems support bash - in that case, please download the dataset another way
+bash download.sh
 
 # Fork the CycleGAN repository
 git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git

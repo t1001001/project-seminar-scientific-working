@@ -217,6 +217,7 @@ main.fls
 main.pdf
 main.bbl
 main.blg
+main.out
 *.aux
 
 # Code

@@ -4,7 +4,7 @@ from utils.cleanup import cleanup
 from utils.make_split import make_split
 from cyclegan.prepare_cyclegan import prepare_cyclegan
 from cyclegan.train_cyclegan import train_cyclegan
-from augmentation.augment_cyclegan import augment_cyclegan
+from cyclegan.test_cyclegan import test_cyclegan
 from yolo.yolo_baseline import yolo_baseline              # Experiment A
 from yolo.yolo_baseline_aug import yolo_baseline_aug      # Experiment B
 from yolo.yolo_cyclegan import yolo_cyclegan            # Experiment C
@@ -27,7 +27,7 @@ def main():
     cleanup()
     prepare_cyclegan()
     train_cyclegan()
-    augment_cyclegan()
+    test_cyclegan()
     yolo_baseline()
     yolo_baseline_aug()
     yolo_cyclegan()

@@ -11,8 +11,8 @@ CYCLEGAN_REPO = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "train.p
 def train_cyclegan():
     print("Starting CycleGAN training...")
     cmd = [
-        sys.executable,            # nutzt den aktiven venv-Interpreter
-        CYCLEGAN_REPO,             # direkt das Skript, kein zusätzliches 'python'
+        sys.executable,
+        CYCLEGAN_REPO,
         "--dataroot", DATASET,
         "--name", NAME,
         "--model", "cycle_gan",

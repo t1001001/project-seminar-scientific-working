@@ -1,23 +1,27 @@
 import os
+import sys
 import subprocess
 from pathlib import Path
 import utils.config as conf
 
 DATASET = f"{conf.ROOT}/data/cyclegan"
 NAME = "luna_cyclegan"
+EPOCHS = 50
 OUT_DIR = Path(f"{conf.ROOT}/data/cyclegan/generated")
 CYCLEGAN_REPO = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "test.py")
 
-def augment_cyclegan():
+def test_cyclegan():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     print("Generating synthetic CT images using CycleGAN...")
     cmd = [
-        "python", CYCLEGAN_REPO,
+        sys.executable, CYCLEGAN_REPO,
         "--dataroot", DATASET,
         "--name", NAME,
         "--model", "cycle_gan",
         "--phase", "test",
-        "--no_dropout"
+        "--no_dropout",
+        "--epoch", EPOCHS,
+        "--checkpoints_dir", os.path.join(conf.ROOT.parent, "checkpoints"),
     ]
     subprocess.run(cmd, check=True)
 
@@ -35,4 +39,4 @@ def augment_cyclegan():
     print(f"Synthetic images saved to data/cyclegan/generated ({count} files).")
 
 if __name__ == "__main__":
-    augment_cyclegan()
+    test_cyclegan()

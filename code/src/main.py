@@ -2,6 +2,7 @@ from preprocessing.extract_slices import extract_all
 from preprocessing.create_labels import create_all_labels
 from utils.cleanup import cleanup
 from utils.make_split import make_split
+from utils.fill_missing_labels import fill_missing_empty_labels
 from cyclegan.prepare_cyclegan import prepare_cyclegan
 from cyclegan.train_cyclegan import train_cyclegan
 from cyclegan.test_cyclegan import test_cyclegan
@@ -23,6 +24,7 @@ MODELS = {
 def main():
     extract_all()
     create_all_labels()
+    fill_missing_empty_labels()
     make_split()
     cleanup()
     prepare_cyclegan()

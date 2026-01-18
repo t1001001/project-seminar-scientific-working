@@ -24,6 +24,9 @@ LBL_EXT = ".txt"
 AUG_MULT = 5          # number of augmented copies per real train image
 AUGMENT_CYC = False   # set True to also augment CycleGAN images
 
+# CycleGAN suffixes
+SUFFIXES = ["_fake_A", "_fake_B", "_real_A", "_real_B", "_rec_A", "_rec_B"]
+
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
 
@@ -57,6 +60,7 @@ AUG_FUNCS = [
     aug_gaussian_noise,   # 4
     aug_clahe,            # 5
 ]
+
 def apply_specific_aug(img_path: Path, out_path: Path, aug_index: int):
     img = Image.open(img_path).convert("L")
     func = AUG_FUNCS[aug_index % len(AUG_FUNCS)]
@@ -75,8 +79,26 @@ def find_label_by_name(name: str) -> Path | None:
     m = list(PRE_LABEL_DIR.glob(f"*/{name.replace(IMG_EXT, LBL_EXT)}"))
     return m[0] if m else None
 
+def find_syn_by_name(name: str) -> Path | None:
+    stem = Path(name).stem
+    candidates = list(SYN_DIR.glob(f"{stem}_*.png"))
+    if not candidates:
+        return None
+
+    def rank(p: Path):
+        s = p.stem
+        for i, suf in enumerate(SUFFIXES):
+            if s.endswith(suf):
+                return i
+        return len(SUFFIXES)
+
+    candidates.sort(key=rank)
+    return candidates[0]
+
 def prepare_dataset():
     split = load_split()
+
+    # Reset folders
     for folder in ["images/train", "images/val", "labels/train", "labels/val"]:
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
@@ -85,38 +107,50 @@ def prepare_dataset():
     for name in split["train"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
+
+        if img_file is None:
+            print(f"[WARN] Missing real image for {name}")
+        if lbl_file is None:
+            print(f"[WARN] Missing label for {name}")
+
         if img_file is None or lbl_file is None:
+            print(f"[SKIP] {name} due to missing image/label")
             continue
 
         # Real
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
 
-        # Augmented copies from real (contrast, brightness, blur, cycling if AUG_MULT>3)
+        # Augmented copies from real
         for i in range(AUG_MULT):
             aug_name = name.replace(IMG_EXT, f"_aug{i+1}{IMG_EXT}")
             apply_specific_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name, i)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / aug_name.replace(IMG_EXT, LBL_EXT))
 
-        # CycleGAN synthetic (prefixed)
-        syn_file = SYN_DIR / name
-        if syn_file.exists():
-            cyc_name = f"cyc_{name}"
-            shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_name)
-            shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_name.replace(IMG_EXT, LBL_EXT))
+        # CycleGAN synthetic
+        syn_file = find_syn_by_name(name)
+        if syn_file:
+            cyc_img_name = f"cyc_{syn_file.name}"
+            cyc_lbl_name = f"{Path(cyc_img_name).stem}{LBL_EXT}"
+            shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
+            shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
+            print(f"[ADD] CycleGAN {syn_file.name} mapped from {name}")
 
-            # Optional: also augment synthetic images (same specific types)
+            # Optional: also augment synthetic
             if AUGMENT_CYC:
                 for i in range(AUG_MULT):
-                    cyc_aug = name.replace(IMG_EXT, f"_cyc_aug{i+1}{IMG_EXT}")
-                    apply_specific_aug(syn_file, YOLO_DATA_DIR / "images/train" / cyc_aug, i)
-                    shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_aug.replace(IMG_EXT, LBL_EXT))
+                    cyc_aug_name = Path(cyc_img_name).stem + f"_aug{i+1}{IMG_EXT}"
+                    apply_specific_aug(syn_file, YOLO_DATA_DIR / "images/train" / cyc_aug_name, i)
+                    shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / f"{Path(cyc_aug_name).stem}{LBL_EXT}")
+        else:
+            print(f"[MISS] No CycleGAN match for {name}")
 
     # Val: real only
     for name in split["val"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
         if img_file is None or lbl_file is None:
+            print(f"[SKIP] val {name} due to missing image/label")
             continue
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/val" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/val" / name.replace(IMG_EXT, LBL_EXT))

@@ -26,7 +26,7 @@ We apply label-preserving appearance augmentations to \emph{training} images onl
   \item Additive Gaussian noise: $\sigma \in [3, 10]$ (pixel intensity, clipped to [0,255])
   \item CLAHE (contrast-limited adaptive histogram equalization): clipLimit $\in [2.0, 3.0]$, tileGridSize $\in \{(8,8),(16,16)\}$
 \end{itemize}
-Each augmented copy applies a single transform (e.g., contrast-only, brightness-only, blur-only, noise-only, CLAHE-only, or color-jitter-only), cycling through types per image as needed. 
+Each augmented copy applies a single transform (e.g., contrast-only, brightness-only, blur-only, noise-only, CLAHE-only, or color-jitter-only), cycling through types per image as needed. For each baseline image, five augmented images are generated.
 
 \subsection{CycleGAN Setup}
 CycleGAN is used to introduce appearance-level variability, such as texture, intensity and contrast while preserving anatomical structure. \\
@@ -36,7 +36,13 @@ CycleGAN is trained for 50 epochs plus 50 epochs of linear learning-rate decay. 
 YOLO is trained on the full training split of real slices. In augmentation settings, we include all available synthetic images and classical augmented copies. CycleGAN augments appearance and does not introduce new nodules; it preserves object geometry and spatial layouts.
 
 \subsection{Evaluation Protocol}
-We report AP@0.5 and AP@0.5:0.95 using the Ultralytics validation routine, and compute Mean IoU restricted to true positives with IoU $\geq 0.5$. Metrics are identical across regimes, following common object detection evaluation practice~\cite{padilla2020metrics}. The validation split is held fixed for fair comparison.
+We evaluate all models on a fixed validation split using standard object detection metrics~\cite{padilla2020metrics}. Evaluations are performed with the Ultralytics validation routine (YOLO11). Hyperparameters and data splits are identical across all training regimes.
+\paragraph{Metric Definitions}
+\begin{itemize}
+    \item \textbf{AP@0.5}: Average Precision computed as the area under the precision–recall curve at an Intersection over Union (IoU) threshold of 0.5.
+    \item \textbf{AP@0.5:0.95}: Mean Average Precision (mAP) computed as the average of AP values over IoU thresholds from 0.50 to 0.95 in increments of 0.05 (i.e., 10 thresholds).
+    \item \textbf{Mean IoU}: Mean Intersection over Union computed only over true positive detections with IoU $\geq 0.5$, using 1:1 matching between predictions and ground-truth boxes.
+\end{itemize}
 
 \subsection{Implementation Details}
 All experiments use identical YOLO hyperparameters and the same data split to ensure comparability. CycleGAN follows the default architecture and losses (adversarial + cycle-consistency), except for the number of real images for training~\cite{zhu2017cyclegan}. The LUNA16 subset choice and 2D slice processing reflect computational constraints and the focus on pulmonary nodule detection in axial slices.

@@ -28,13 +28,13 @@ def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
 
 def aug_contrast(img: Image.Image) -> Image.Image:
-    return ImageEnhance.Contrast(img).enhance(random.uniform(0.8, 1.3))
+    return ImageEnhance.Contrast(img).enhance(random.uniform(0.5, 1.5))
 
 def aug_brightness(img: Image.Image) -> Image.Image:
-    return ImageEnhance.Brightness(img).enhance(random.uniform(0.8, 1.3))
+    return ImageEnhance.Brightness(img).enhance(random.uniform(0.5, 1.5))
 
 def aug_gaussian_blur(img: Image.Image) -> Image.Image:
-    return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.4, 1.2)))
+    return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.5, 1.5)))
 
 def aug_gaussian_noise(img: Image.Image) -> Image.Image:
     arr = np.array(img, dtype=np.float32)

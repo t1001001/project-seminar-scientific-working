@@ -193,4 +193,3 @@ def yolo_cyclegan_aug():
 
 if __name__ == "__main__":
     yolo_cyclegan_aug()
-y

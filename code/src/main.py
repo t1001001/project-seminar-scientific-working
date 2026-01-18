@@ -21,13 +21,13 @@ MODELS = {
 }
 
 def main():
-    extract_all()
-    create_all_labels()
-    make_split()
-    cleanup()
-    prepare_cyclegan()
-    train_cyclegan()
-    test_cyclegan()
+    # extract_all()
+    # create_all_labels()
+    # make_split()
+    # cleanup()
+    # prepare_cyclegan()
+    # train_cyclegan()
+    # test_cyclegan()
     yolo_baseline()
     yolo_baseline_aug()
     yolo_cyclegan()

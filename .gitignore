@@ -226,6 +226,7 @@ code/wget-log
 
 # Misc
 yolo11n.pt
+yolo26n.pt
 runs/
 pytorch-CycleGAN-and-pix2pix
 checkpoints/

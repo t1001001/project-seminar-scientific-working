@@ -9,7 +9,7 @@ import utils.config as conf
 SOURCE_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
 CYCLEGAN_DIR = Path(f"{conf.ROOT}/data/cyclegan")
 
-TRAIN_SPLIT = 0.9
+TRAIN_SPLIT = 0.8
 
 def ensure(path):
     path.mkdir(parents=True, exist_ok=True)

@@ -135,8 +135,11 @@ def prepare_dataset():
         syn_file = find_syn_by_name(name)
         if syn_file:
             try:
-                cyc_img_name = f"cyc_{syn_file.name}"
-                cyc_lbl_name = f"{Path(cyc_img_name).stem}{LBL_EXT}"
+                orig = Path(name).stem
+                base = Path(syn_file.name).stem
+                ext = Path(syn_file.name).suffix
+                cyc_img_name = f"cyc_{orig}__{base}{ext}"
+                cyc_lbl_name = f"cyc_{orig}__{base}{LBL_EXT}"
                 shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
                 shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
                 print(f"[ADD] CycleGAN {syn_file.name} mapped from {name}")

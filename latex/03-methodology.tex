@@ -18,13 +18,13 @@ We compare four settings under identical optimization and reporting protocols:
 All settings use the same YOLO hyperparameters: \texttt{yolo11n} weights, 100 epochs, input size $512 \times 512$, batch size 32.
 
 \subsection{Classical Augmentation}
-We apply label-preserving appearance augmentations to \emph{training} images only. Geometric transformations such as rotation, flipping, cropping or scaling are avoided to prevent spatial misalignment with bounding boxes~\cite{padilla2020metrics}.. Specifically, we use:
+We apply label-preserving appearance augmentations to \emph{training} images only. Geometric transformations such as rotation, flipping, cropping or scaling are avoided to prevent spatial misalignment with bounding boxes~\cite{padilla2020metrics}. Specifically, we use:
 \begin{itemize}
-  \item Brightness jitter: scale $\in [0.50, 1.50]$
-  \item Contrast jitter: scale $\in [0.50, 1.50]$
-  \item Gaussian blur: radius $\in [0.50, 1.50]$
-  \item Additive Gaussian noise: $\sigma \in [3, 10]$ (pixel intensity, clipped to [0,255])
-  \item CLAHE (contrast-limited adaptive histogram equalization): clipLimit $\in [2.0, 3.0]$, tileGridSize $\in \{(8,8),(16,16)\}$
+  \item Brightness jitter: scale $\in [0.50, 1.50]$: Multiplies pixel values. $<1$ darkens, $>1$ brightens. Simulates exposure changes.
+  \item Contrast jitter: scale $\in [0.50, 1.50]$: Scales intensity spread. Low flattens, high enhances. Mimics contrast variability.
+  \item Gaussian blur: radius $\in [0.50, 1.50]$: Gaussian convolution. Reduces high-frequency detail. Simulates smoothing/mild motion.
+  \item Additive Gaussian noise: $\sigma \in [3, 10]$ (pixel intensity, clipped to [0,255]): Adds zero-mean noise. Emulates sensor/reconstruction noise.
+  \item CLAHE (contrast-limited adaptive histogram equalization): clipLimit $\in [2.0, 3.0]$, tileGridSize $\in \{(8,8),(16,16)\}$: Local histogram equalization with clipping. Enhances local contrast while limiting noise amplification.
 \end{itemize}
 Each augmented copy applies a single transform (e.g., contrast-only, brightness-only, blur-only, noise-only, CLAHE-only, or color-jitter-only), cycling through types per image as needed. For each baseline image, five augmented images are generated.
 

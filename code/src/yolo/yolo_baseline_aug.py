@@ -23,13 +23,21 @@ AUG_MULT = 3  # number of augmented copies per train image
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
 
-def apply_intensity_aug(img_path: Path, out_path: Path):
-    # Label-preserving aug: brightness/contrast (+ optional light blur)
+def aug_contrast(img: Image.Image) -> Image.Image:
+    return ImageEnhance.Contrast(img).enhance(random.uniform(0.9, 1.2))
+
+def aug_brightness(img: Image.Image) -> Image.Image:
+    return ImageEnhance.Brightness(img).enhance(random.uniform(0.95, 1.1))
+
+def aug_gaussian_blur(img: Image.Image) -> Image.Image:
+    return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.2, 0.8)))
+
+AUG_FUNCS = [aug_contrast, aug_brightness, aug_gaussian_blur]
+
+def apply_specific_aug(img_path: Path, out_path: Path, aug_index: int):
     img = Image.open(img_path).convert("L")
-    img = ImageEnhance.Contrast(img).enhance(random.uniform(0.9, 1.2))
-    img = ImageEnhance.Brightness(img).enhance(random.uniform(0.95, 1.1))
-    if random.random() < 0.2:
-        img = img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.2, 0.8)))
+    func = AUG_FUNCS[aug_index % len(AUG_FUNCS)]
+    img = func(img)
     img.save(out_path)
 
 def load_split():
@@ -52,7 +60,7 @@ def prepare_dataset():
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
 
-    # Train: copy real + add augmented copies
+    # Train: copy real + add specific augmented copies
     for name in split["train"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
@@ -63,10 +71,10 @@ def prepare_dataset():
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
 
-        # Add augmented copies with suffix
+        # Add augmented copies with fixed types per index
         for i in range(AUG_MULT):
             aug_name = name.replace(IMG_EXT, f"_aug{i+1}{IMG_EXT}")
-            apply_intensity_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name)
+            apply_specific_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name, i)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / aug_name.replace(IMG_EXT, LBL_EXT))
 
     # Val: copy real only

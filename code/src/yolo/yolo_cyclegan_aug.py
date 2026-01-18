@@ -25,12 +25,21 @@ AUGMENT_CYC = False   # set True to also augment CycleGAN images
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
 
-def apply_intensity_aug(img_path: Path, out_path: Path):
+def aug_contrast(img: Image.Image) -> Image.Image:
+    return ImageEnhance.Contrast(img).enhance(random.uniform(0.9, 1.2))
+
+def aug_brightness(img: Image.Image) -> Image.Image:
+    return ImageEnhance.Brightness(img).enhance(random.uniform(0.95, 1.1))
+
+def aug_gaussian_blur(img: Image.Image) -> Image.Image:
+    return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.2, 0.8)))
+
+AUG_FUNCS = [aug_contrast, aug_brightness, aug_gaussian_blur]
+
+def apply_specific_aug(img_path: Path, out_path: Path, aug_index: int):
     img = Image.open(img_path).convert("L")
-    img = ImageEnhance.Contrast(img).enhance(random.uniform(0.9, 1.2))
-    img = ImageEnhance.Brightness(img).enhance(random.uniform(0.95, 1.1))
-    if random.random() < 0.2:
-        img = img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.2, 0.8)))
+    func = AUG_FUNCS[aug_index % len(AUG_FUNCS)]
+    img = func(img)
     img.save(out_path)
 
 def load_split():
@@ -51,7 +60,7 @@ def prepare_dataset():
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
 
-    # Train: real + augmented + CycleGAN
+    # Train: real + specific augmented copies + CycleGAN
     for name in split["train"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
@@ -62,10 +71,10 @@ def prepare_dataset():
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
 
-        # Augmented copies from real
+        # Augmented copies from real (contrast, brightness, blur, cycling if AUG_MULT>3)
         for i in range(AUG_MULT):
             aug_name = name.replace(IMG_EXT, f"_aug{i+1}{IMG_EXT}")
-            apply_intensity_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name)
+            apply_specific_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name, i)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / aug_name.replace(IMG_EXT, LBL_EXT))
 
         # CycleGAN synthetic (prefixed)
@@ -75,11 +84,11 @@ def prepare_dataset():
             shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_name)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_name.replace(IMG_EXT, LBL_EXT))
 
-            # Optional: augment synthetic images too
+            # Optional: also augment synthetic images (same specific types)
             if AUGMENT_CYC:
                 for i in range(AUG_MULT):
                     cyc_aug = name.replace(IMG_EXT, f"_cyc_aug{i+1}{IMG_EXT}")
-                    apply_intensity_aug(syn_file, YOLO_DATA_DIR / "images/train" / cyc_aug)
+                    apply_specific_aug(syn_file, YOLO_DATA_DIR / "images/train" / cyc_aug, i)
                     shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_aug.replace(IMG_EXT, LBL_EXT))
 
     # Val: real only

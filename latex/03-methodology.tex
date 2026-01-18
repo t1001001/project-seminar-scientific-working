@@ -36,7 +36,7 @@ CycleGAN is trained for 50 epochs plus 50 epochs of linear learning-rate decay. 
 YOLO is trained on the full training split of real slices. In augmentation settings, we include all available synthetic images and classical augmented copies. CycleGAN augments appearance and does not introduce new nodules; it preserves object geometry and spatial layouts.
 
 \subsection{Evaluation Protocol}
-We report AP@0.5 and AP@0.5:0.95 (mAP) using the Ultralytics validation routine, and compute Mean IoU restricted to true positives with IoU $\geq 0.5$. Metrics are identical across regimes, following common object detection evaluation practice~\cite{padilla2020metrics}. The validation split is held fixed for fair comparison.
+We report AP@0.5 and AP@0.5:0.95 using the Ultralytics validation routine, and compute Mean IoU restricted to true positives with IoU $\geq 0.5$. Metrics are identical across regimes, following common object detection evaluation practice~\cite{padilla2020metrics}. The validation split is held fixed for fair comparison.
 
 \subsection{Implementation Details}
 All experiments use identical YOLO hyperparameters and the same data split to ensure comparability. CycleGAN follows the default architecture and losses (adversarial + cycle-consistency), except for the number of real images for training~\cite{zhu2017cyclegan}. The LUNA16 subset choice and 2D slice processing reflect computational constraints and the focus on pulmonary nodule detection in axial slices.

@@ -7,13 +7,29 @@
 \usepackage{lmodern}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker = {.}}
 %
 % T1 fonts will be used to generate the final print and online PDFs,
 % so please use T1 fonts in your manuscript whenever possible.
 % Other font encondings may result in incorrect characters.
 %
 \usepackage{graphicx}
+\usepackage{subfig}
 \usepackage{float}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{8pt}
+\setlength{\@fpbot}{0pt}
+\makeatother
+\renewcommand{\floatpagefraction}{.8}
+\renewcommand{\textfraction}{.1}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\bottomfraction}{.9}
+\setcounter{totalnumber}{5}
+\setcounter{topnumber}{5}
+\setcounter{bottomnumber}{5}
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
 %

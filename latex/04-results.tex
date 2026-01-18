@@ -23,7 +23,7 @@ Figure~\ref{fig:aug_examples} shows appearance-level augmentations (contrast, br
 \end{figure}
 
 \subsection{Quantitative Performance}
-Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU across five runs.
+Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU.
 
 \begin{table}[H]
 \centering
@@ -32,16 +32,16 @@ Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
-\textbf{Setting} & \textbf{AP@0.5 ($\mu\pm\sigma$, CV\%)} & \textbf{AP@0.5:0.95 ($\mu\pm\sigma$, CV\%)} & \textbf{Mean IoU ($\mu\pm\sigma$, CV\%)} \\
+\textbf{Setting} & \textbf{AP@0.5} & \textbf{AP@0.5:0.95} & \textbf{Mean IoU} \\
 \midrule
-Baseline & $0.747 \pm 0.00$, 0.0\% & $0.398 \pm 0.00$, 0.0\% & $0.691 \pm 0.00$, 0.0\% \\
-Baseline + Classical Aug & $0.768 \pm 0.00$, 0.0\% & $0.415 \pm 0.00$, 0.0\% & $0.750 \pm 0.00$, 0.0\% \\
-Baseline + CycleGAN & $0.742 \pm 0.00$, 0.0\% & $0.434 \pm 0.00$, 0.0\% & $0.745 \pm 0.00$, 0.0\% \\
-Classical Aug + CycleGAN & $0.770 \pm 0.00$, 0.0\% & $0.467 \pm 0.00$, 0.0\% & $0.797 \pm 0.00$, 0.0\% \\
+Baseline & 0.747 & 0.398 & 0.691 \\
+Baseline + Classical Aug & 0.768 & 0.415 & 0.750 \\
+Baseline + CycleGAN & 0.742 & 0.434 & 0.745 \\
+Classical Aug + CycleGAN & 0.770 & 0.467 & 0.797 \\
 \bottomrule
 \end{tabular}}
 \end{table}
 \noindent
-Across all five runs, metrics remain consistent. Overall, settings with classical augmentations improve all metrics over the baseline settings. \\
+Overall, settings with classical augmentations improve all metrics over the baseline settings. \\
 The baseline + CycleGAN setting alone increases AP@0.5:0.95 and Mean IoU relative to baseline, with a slightly lower AP@0.5. \\
 The setting of classical augmentation + CycleGAN has the best performance across all metrics.

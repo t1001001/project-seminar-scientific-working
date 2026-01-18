@@ -46,6 +46,3 @@ We evaluate all models on a fixed validation split using standard object detecti
 
 \subsection{Implementation Details}
 All experiments use identical YOLO hyperparameters and the same data split to ensure comparability. CycleGAN follows the default architecture and losses (adversarial + cycle-consistency), except for the number of real images for training~\cite{zhu2017cyclegan}. The LUNA16 subset choice and 2D slice processing reflect computational constraints and the focus on pulmonary nodule detection in axial slices.
-
-% \subsection{Limitations}
-% Our study is limited by: (i) the use of a LUNA16 subset and 2D slices, which may omit inter-slice context; (ii) absence of a separate patient-level test set; (iii) potential slice-level split leakage if scans contribute slices to both train and val; and (iv) CycleGAN training capped at 2000 images. Prior work suggests that appearance-level synthesis may not fully model geometric variability critical for precise localization~\cite{hammami2020cyclegan}, and anatomically consistent volumetric synthesis (e.g., diffusion or 3D style-based methods) could be promising directions~\cite{khader2023ddpm3d,ellis2022stylegan3d}.

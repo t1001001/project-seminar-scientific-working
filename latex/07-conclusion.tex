@@ -1,3 +1,5 @@
 \section{Conclusion}
-This work evaluated the impact of CycleGAN-based data augmentation of pulmonary nodule detection using YOLO11. Across four controlled experimental settings, detection performance remained largely unchanged with minor changes across settings. \\
-These findings suggest that CycleGAN-based augmentation provides limited benefit for object detection in chest CT scans and that GAN-based augmentation strategies effective for classification and segmentation tasks may not transfer to object detection tasks.
+This study evaluated CycleGAN-based augmentation for pulmonary nodule detection in chest CT scans using YOLO11 across four controlled training settings. The inclusion of CycleGAN-generated images increased AP€0.5:0.95 and Mean IoU relative to the baseline, but with a slight decrease in AP@0.5. Appearance-level, label-preserving augmentations improved all metrics over baseline, and their combination with CycleGAN achieved the best, yet modest results. \\
+These findings indicate that appearance-level synthesis via CycleGAN offers little benefit for object detection and that gains observed in classification and segmentation does not necessarily translate into gains in object detection. \\
+Future work should explore anatomically consistent, diffusion- or 3D style-based generators to better capture geometric variability for precise detection. \\
+Limitations include reliance on a single dataset, one GAN architecture, and one object detection model, as well as 2D slice processing and absence of clinical validation of realism.

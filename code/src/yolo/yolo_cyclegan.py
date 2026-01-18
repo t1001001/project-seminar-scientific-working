@@ -19,7 +19,6 @@ BATCH = 32
 IMG_EXT = ".png"
 LBL_EXT = ".txt"
 
-# CycleGAN suffixes
 SUFFIXES = ["_fake_A", "_fake_B", "_real_A", "_real_B", "_rec_A", "_rec_B"]
 
 def ensure_dir(path: Path):
@@ -45,7 +44,7 @@ def find_syn_by_name(name: str) -> Path | None:
         if p.suffix.lower() in exts and stem in p.stem
     ]
     if not candidates and len(stem) >= 8:
-        patt = re.compile(re.escape(stem[:(8)]), re.IGNORECASE)
+        patt = re.compile(re.escape(stem[:8]), re.IGNORECASE)
         candidates = [
             p for p in SYN_DIR.rglob("*.*")
             if p.suffix.lower() in exts and patt.search(p.stem)
@@ -131,7 +130,6 @@ def yolo_cyclegan():
     print("\n=== YOLO CycleGAN (Experiment C) ===")
     prepare_dataset()
     create_yaml()
-
     print("Training YOLOv11 on CycleGAN-Augmented Dataset")
     model = YOLO(WEIGHTS)
     model.train(

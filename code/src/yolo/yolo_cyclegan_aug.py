@@ -22,10 +22,9 @@ IMG_SIZE = 512
 BATCH = 32
 IMG_EXT = ".png"
 LBL_EXT = ".txt"
-AUG_MULT = 5          # number of augmented copies per real train image
-AUGMENT_CYC = False   # set True to also augment CycleGAN images
+AUG_MULT = 5
+AUGMENT_CYC = False
 
-# CycleGAN suffixes
 SUFFIXES = ["_fake_A", "_fake_B", "_real_A", "_real_B", "_rec_A", "_rec_B"]
 
 def ensure_dir(path: Path):
@@ -106,7 +105,6 @@ def find_syn_by_name(name: str) -> Path | None:
             if s.endswith(suf):
                 return (base, i, len(s))
         return (base, len(SUFFIXES), len(s))
-
     candidates.sort(key=rank)
     return candidates[0]
 
@@ -165,11 +163,7 @@ def prepare_dataset():
     tl = len(list((YOLO_DATA_DIR / "labels/train").glob(f"*{LBL_EXT}")))
     vi = len(list((YOLO_DATA_DIR / "images/val").glob(f"*{IMG_EXT}")))
     vl = len(list((YOLO_DATA_DIR / "labels/val").glob(f"*{LBL_EXT}")))
-    cyc_imgs = len(list((YOLO_DATA_DIR / "images/train").glob("cyc_*")))
-    cyc_lbls = len(list((YOLO_DATA_DIR / "labels/train").glob("cyc_*")))
     print(f"Prepared: train {ti} imgs/{tl} labels; val {vi} imgs/{vl} labels")
-    print(f"Synthetic added: {add_count} | misses: {miss_count} | skips: {skip_count}")
-    print(f"cyc_* images: {cyc_imgs} | cyc_* labels: {cyc_lbls}")
 
 def create_yaml():
     ensure_dir(YAML_PATH.parent)
@@ -187,7 +181,6 @@ def yolo_cyclegan_aug():
     print("\n=== YOLO Baseline Augmentation + CycleGAN (Experiment D) ===")
     prepare_dataset()
     create_yaml()
-
     model = YOLO(WEIGHTS)
     model.train(
         data=str(YAML_PATH),
@@ -200,3 +193,4 @@ def yolo_cyclegan_aug():
 
 if __name__ == "__main__":
     yolo_cyclegan_aug()
+y

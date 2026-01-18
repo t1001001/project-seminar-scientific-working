@@ -5,6 +5,8 @@ from pathlib import Path
 from PIL import Image, ImageEnhance, ImageFilter
 from ultralytics import YOLO
 import utils.config as conf
+import numpy as np
+import cv2
 
 PRE_IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
 PRE_LABEL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
@@ -18,21 +20,41 @@ IMG_SIZE = 512
 BATCH = 32
 IMG_EXT = ".png"
 LBL_EXT = ".txt"
-AUG_MULT = 3  # number of augmented copies per train image
+AUG_MULT = 5  # number of augmented copies per train image
 
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
 
 def aug_contrast(img: Image.Image) -> Image.Image:
-    return ImageEnhance.Contrast(img).enhance(random.uniform(0.9, 1.2))
+    return ImageEnhance.Contrast(img).enhance(random.uniform(0.8, 1.3))
 
 def aug_brightness(img: Image.Image) -> Image.Image:
-    return ImageEnhance.Brightness(img).enhance(random.uniform(0.95, 1.1))
+    return ImageEnhance.Brightness(img).enhance(random.uniform(0.8, 1.3))
 
 def aug_gaussian_blur(img: Image.Image) -> Image.Image:
-    return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.2, 0.8)))
+    return img.filter(ImageFilter.GaussianBlur(radius=random.uniform(0.4, 1.2)))
 
-AUG_FUNCS = [aug_contrast, aug_brightness, aug_gaussian_blur]
+def aug_gaussian_noise(img: Image.Image) -> Image.Image:
+    arr = np.array(img, dtype=np.float32)
+    sigma = random.uniform(5, 15)
+    noise = np.random.normal(0, sigma, arr.shape).astype(np.float32)
+    arr = np.clip(arr + noise, 0, 255).astype(np.uint8)
+    return Image.fromarray(arr)
+
+def aug_clahe(img: Image.Image) -> Image.Image:
+    arr = np.array(img)
+    clahe = cv2.createCLAHE(clipLimit=random.uniform(2.0, 4.0),
+                            tileGridSize=(random.choice([8, 16]), random.choice([8, 16])))
+    enhanced = clahe.apply(arr)
+    return Image.fromarray(enhanced)
+
+AUG_FUNCS = [
+    aug_contrast,         # 1
+    aug_brightness,       # 2
+    aug_gaussian_blur,    # 3
+    aug_gaussian_noise,   # 4
+    aug_clahe,            # 5
+]
 
 def apply_specific_aug(img_path: Path, out_path: Path, aug_index: int):
     img = Image.open(img_path).convert("L")

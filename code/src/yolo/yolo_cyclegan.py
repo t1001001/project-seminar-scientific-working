@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 from ultralytics import YOLO
 import utils.config as conf
+import re
 
 PRE_IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
 PRE_LABEL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
@@ -38,74 +39,82 @@ def find_label_by_name(name: str) -> Path | None:
 
 def find_syn_by_name(name: str) -> Path | None:
     stem = Path(name).stem
-    candidates = list(SYN_DIR.glob(f"{stem}_*.png"))
+    exts = {".png", ".jpg", ".jpeg"}
+    candidates = [
+        p for p in SYN_DIR.rglob("*.*")
+        if p.suffix.lower() in exts and stem in p.stem
+    ]
+    if not candidates and len(stem) >= 8:
+        patt = re.compile(re.escape(stem[:(8)]), re.IGNORECASE)
+        candidates = [
+            p for p in SYN_DIR.rglob("*.*")
+            if p.suffix.lower() in exts and patt.search(p.stem)
+        ]
     if not candidates:
         return None
-
     def rank(p: Path):
         s = p.stem
+        base = 0 if s.startswith(stem) else 1
         for i, suf in enumerate(SUFFIXES):
             if s.endswith(suf):
-                return i
-        return len(SUFFIXES)
-
+                return (base, i, len(s))
+        return (base, len(SUFFIXES), len(s))
     candidates.sort(key=rank)
     return candidates[0]
 
 def prepare_dataset():
     split = load_split()
-
-    # Reset folders
     for folder in ["images/train", "images/val", "labels/train", "labels/val"]:
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
-
-    # Train: real + CycleGAN
-    for name in split["train"]:
+    add_count = 0
+    miss_count = 0
+    skip_count = 0
+    train_names = [
+        n for n in split["train"]
+        if find_image_by_name(n) and find_label_by_name(n)
+    ]
+    print(f"[INFO] Train usable entries: {len(train_names)}")
+    for name in train_names:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
-
-        if img_file is None:
-            print(f"[WARN] Missing real image for {name}")
-        if lbl_file is None:
-            print(f"[WARN] Missing label for {name}")
-
-        # If either missing, skip both real and synthetic to maintain consistency
         if img_file is None or lbl_file is None:
+            skip_count += 1
             print(f"[SKIP] {name} due to missing image/label")
             continue
-
-        # Real
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
-
-        # CycleGAN synthetic
         syn_file = find_syn_by_name(name)
         if syn_file:
             cyc_img_name = f"cyc_{syn_file.name}"
             cyc_lbl_name = f"{Path(cyc_img_name).stem}{LBL_EXT}"
             shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
-            print(f"[ADD] CycleGAN {syn_file.name} mapped from {name}")
+            add_count += 1
+        if add_count <= 10:
+            print(f"[ADD] {name} -> {syn_file.name}")
         else:
+            miss_count += 1
             print(f"[MISS] No CycleGAN match for {name}")
-
-    # Val: real only
-    for name in split["val"]:
+    val_names = [
+        n for n in split["val"]
+        if find_image_by_name(n) and find_label_by_name(n)
+    ]
+    print(f"[INFO] Val usable entries: {len(val_names)}")
+    for name in val_names:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
-        if img_file is None or lbl_file is None:
-            print(f"[SKIP] val {name} due to missing image/label")
-            continue
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/val" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/val" / name.replace(IMG_EXT, LBL_EXT))
-
-    # Consistency check
     ti = len(list((YOLO_DATA_DIR / "images/train").glob(f"*{IMG_EXT}")))
     tl = len(list((YOLO_DATA_DIR / "labels/train").glob(f"*{LBL_EXT}")))
     vi = len(list((YOLO_DATA_DIR / "images/val").glob(f"*{IMG_EXT}")))
     vl = len(list((YOLO_DATA_DIR / "labels/val").glob(f"*{LBL_EXT}")))
+    cyc_imgs = len(list((YOLO_DATA_DIR / "images/train").glob("cyc_*")))
+    cyc_lbls = len(list((YOLO_DATA_DIR / "labels/train").glob("cyc_*")))
     print(f"Prepared: train {ti} imgs/{tl} labels; val {vi} imgs/{vl} labels")
+    print(f"Synthetic added: {add_count} | misses: {miss_count} | skips: {skip_count}")
+    print(f"cyc_* images: {cyc_imgs} | cyc_* labels: {cyc_lbls}")
 
 def create_yaml():
     ensure_dir(YAML_PATH.parent)

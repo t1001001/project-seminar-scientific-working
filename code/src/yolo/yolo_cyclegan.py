@@ -12,7 +12,7 @@ SPLIT_PATH = Path(f"{conf.ROOT}/data/split.json")
 YAML_PATH = Path(f"{conf.ROOT}/cyclegan.yaml")
 
 WEIGHTS = "yolo11n.pt"
-EPOCHS = 50
+EPOCHS = 100
 IMG_SIZE = 512
 BATCH = 32
 IMG_EXT = ".png"

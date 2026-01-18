@@ -13,12 +13,12 @@ SPLIT_PATH = Path(f"{conf.ROOT}/data/split.json")
 YAML_PATH = Path(f"{conf.ROOT}/baseline_aug.yaml")
 
 WEIGHTS = "yolo11n.pt"
-EPOCHS = 50
+EPOCHS = 100
 IMG_SIZE = 512
 BATCH = 32
 IMG_EXT = ".png"
 LBL_EXT = ".txt"
-AUG_MULT = 1  # number of augmented copies per train image
+AUG_MULT = 3  # number of augmented copies per train image
 
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)

@@ -30,11 +30,11 @@ def load_split():
         return json.load(f)
 
 def find_image_by_name(name: str) -> Path | None:
-    matches = list(PRE_IMG_DIR.glob(f"*/{name}"))
+    matches = list(PRE_IMG_DIR.rglob(name))
     return matches[0] if matches else None
 
 def find_label_by_name(name: str) -> Path | None:
-    matches = list(PRE_LABEL_DIR.glob(f"*/{name.replace(IMG_EXT, LBL_EXT)}"))
+    matches = list(PRE_LABEL_DIR.rglob(name.replace(IMG_EXT, LBL_EXT)))
     return matches[0] if matches else None
 
 def find_syn_by_name(name: str) -> Path | None:
@@ -70,36 +70,35 @@ def prepare_dataset():
     add_count = 0
     miss_count = 0
     skip_count = 0
-    train_names = [
-        n for n in split["train"]
-        if find_image_by_name(n) and find_label_by_name(n)
-    ]
+    train_names = [n for n in split["train"] if find_image_by_name(n) and find_label_by_name(n)]
     print(f"[INFO] Train usable entries: {len(train_names)}")
     for name in train_names:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
         if img_file is None or lbl_file is None:
             skip_count += 1
-            print(f"[SKIP] {name} due to missing image/label")
+            if skip_count <= 10:
+                print(f"[SKIP] {name} due to missing image/label")
             continue
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
         syn_file = find_syn_by_name(name)
         if syn_file:
-            cyc_img_name = f"cyc_{syn_file.name}"
-            cyc_lbl_name = f"{Path(cyc_img_name).stem}{LBL_EXT}"
-            shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
-            shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
-            add_count += 1
-        if add_count <= 10:
-            print(f"[ADD] {name} -> {syn_file.name}")
+            try:
+                cyc_img_name = f"cyc_{syn_file.name}"
+                cyc_lbl_name = f"{Path(cyc_img_name).stem}{LBL_EXT}"
+                shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
+                shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
+                add_count += 1
+                if add_count <= 10:
+                    print(f"[ADD] {name} -> {syn_file.name}")
+            except Exception as e:
+                print(f"[ERR] Copy failed for {name} ({syn_file}): {e}")
         else:
             miss_count += 1
-            print(f"[MISS] No CycleGAN match for {name}")
-    val_names = [
-        n for n in split["val"]
-        if find_image_by_name(n) and find_label_by_name(n)
-    ]
+            if miss_count <= 10:
+                print(f"[MISS] No CycleGAN match for {name}")
+    val_names = [n for n in split["val"] if find_image_by_name(n) and find_label_by_name(n)]
     print(f"[INFO] Val usable entries: {len(val_names)}")
     for name in val_names:
         img_file = find_image_by_name(name)

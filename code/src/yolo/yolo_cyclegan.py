@@ -92,8 +92,7 @@ def prepare_dataset():
                 shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
                 shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
                 add_count += 1
-                if add_count <= 10:
-                    print(f"[ADD] {name} -> {cyc_img_name}")
+                print(f"[ADD] {name} -> {cyc_img_name}")
             except Exception as e:
                 print(f"[ERR] Synthetic copy failed for {name} ({syn_file}): {e}")
         else:

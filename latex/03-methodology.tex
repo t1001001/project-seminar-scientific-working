@@ -1,29 +1,37 @@
 \section{Methodology}
-The following methodology description provides an overview of the experimental setup. It includes the dataset preparation, the synthetic image generation process, the object detection model, and the evaluation.
-\subsection{Dataset}
-The experiments are conducted on the LUNA16 dataset, a benchmark medical imaging dataset for pulmonary nodule detection derived from the LIDC-IDRI dataset~\cite{luna16}. It contains 888 chest CT scans where each scan is annotated by multiple radiologists. For this work, CT scans are processed into two-dimensional slices containing annotated nodules. Bounding box annotations are generated from the provided nodule masks. During preprocessing, a small number of images with invalid annotations were automatically excluded to ensure label consistency. The resulting dataset is split into training and validation subsets, where 80\% of the data is used for training and the remaining 20\% is reserved for validation.
-\subsection{Classical Data Augmentation}
-Classical data augmentation was applied to two of the training settings and was limited to annotation-preserving augmentations. These included intensity scaling and contrast adjustment to simulate variations in CT conditions. Geometric augmentations such as rotation, flipping, scaling, or cropping were avoided to prevent spatial misalignment between images and bounding box annotations. These augmentations preserve bounding box geometry and do not require changes to annotation coordinates.
-\subsection{GAN-based Data Augmentation}
-We utilize a CycleGAN architecture to generate realistic synthetic chest CT images for data augmentation. CycleGAN is used to introduce appearance-level variability in CT images, such as changes in texture and contrast, while preserving overall anatomical structure. Training is performed for 50 epochs with an additional 50 epochs of linear learning rate decay. To reduce computational complexity, the training dataset is capped at 2000 images. The default CycleGAN architecture and loss formulation are used, including adversarial loss and cycle-consistency loss. After training, the generator produces synthetic images that resemble real CT scans and are incorporated into the dataset to augment it.
-\subsection{Object Detection Model}
-For pulmonary nodule detection, we utilize the YOLO11 object detection framework, which represents the latest advancement in the YOLO family~\cite{yolo11}. The detector is initialized with pretrained weights and fine-tuned on the LUNA16 dataset. YOLO11 is trained for 50 epochs using an input resolution of 512×512 pixels and a batch size of 32. All experiments are conducted using identical training settings to ensure a fair comparison.
-\subsection{Training Procedure}
-The overall training pipeline consists of two sequential stages. First, the CycleGAN is trained to generate synthetic CT images from the original dataset. Second, the YOLO11 detector is trained using different settings of training data.
-Four training settings are evaluated:
-\begin{itemize}
-    \item Training on real images only (baseline).
-    \item Training on real images with classical augmentation.
-    \item Training on a combination of real and CycleGAN-generated images.
-    \item Training on a combination of real images, classical augmentation, and CycleGAN-generated images.
-\end{itemize}
-All models are trained using identical optimization settings, including learning rates, batch sizes and number of epochs, to ensure a fair comparison.
-\subsection{Evaluation}
-The performance of YOLO11 is evaluated using standard metrics for object detection~\cite{odmetrics}. These include:
-\begin{itemize}
-    \item \textbf{Intersection over Union (IoU):} Measures the overlap between two regions by dividing the area of their intersection by the area of their union.
-    \item \textbf{Average Precision (AP):} Measures the accuracy by calculating the area under the precision-recall curve.
-\end{itemize}
-We use an AP at an IoU of 0.5 and mean Average Precision (MAP) over IoU thresholds from 0.5 to 0.95. Additionally, Mean Intersection over Union (Mean IoU) is computed manually by matching predicted bounding boxes to ground-truth annotations. Furthermore, the Mean IoU is restricted to only be computed to true positive detections to better isolate localization quality.
 
-\noindent
+\subsection{Dataset and Preprocessing}
+We use the LUNA16 chest CT benchmark derived from LIDC-IDRI~\cite{setio2017luna16}. Due to computational constraints, we operate on a subset of scans and extract two-dimensional axial slices from volumetric CTs. Each slice is converted to PNG after Hounsfield unit clipping to $[-1000, 400]$ and linear normalization to 8-bit (0--255). Labels are generated in YOLO format with a single class (\texttt{nodule}). \\
+To avoid randomness in the split, we use a deterministic partition, assigning 80\% of slices to training and 20\% to validation. 
+
+\subsection{Label Generation}
+World coordinates and nodule diameters (mm) are converted to voxel coordinates using scan-specific origin and spacing. For a slice index $z$, if a nodule center projects to that slice, its bounding box is constructed around the center using half the diameter along $x$ and $y$, normalized by slice width and height to produce YOLO labels $(x_c, y_c, w, h)$. Multiple nodules per slice are appended as separate lines.
+
+\subsection{Training Settings}
+We compare four settings under identical optimization and reporting protocols:
+\begin{enumerate}
+  \item \textbf{Baseline}: YOLOv11 trained on real slices only.
+  \item \textbf{Baseline + Classical Augmentation}: real slices plus label-preserving intensity augmentations on training images.
+  \item \textbf{Baseline + CycleGAN}: real training slices combined with synthetic images generated by CycleGAN.
+  \item \textbf{Classical Augmentation + CycleGAN}: combination of classical augmentations and CycleGAN-generated images.
+\end{enumerate}
+All settings use the same YOLO hyperparameters: \texttt{yolo11n} weights, 100 epochs, input size $512 \times 512$, batch size 32.
+
+\subsection{Classical Augmentation}
+Annotation-preserving intensity transformations are applied to training images only: brightness scaling in $[0.95, 1.10]$, contrast scaling in $[0.90, 1.20]$, and optional Gaussian blur with radius $[0.2, 0.8]$ at 20\% probability. Geometric transformations such as rotation, flipping, cropping or scaling are avoided to prevent spatial misalignment with bounding boxes~\cite{padilla2020metrics}.
+
+\subsection{CycleGAN Setup}
+CycleGAN is used to introduce appearance-level variability, such as texture, intensity and contrast while preserving anatomical structure. \\
+We construct two domains $\mathcal{A}$ (original) and $\mathcal{B}$ (styled) from the same slice set via a deterministic 80/20 split. \texttt{trainA/testA} contain original slices, while \texttt{trainB/testB} apply a fixed style transform (contrast 1.4, brightness 1.15) to form a target appearance domain. Samples are unpaired, consistent with CycleGAN’s design~\cite{zhu2017cyclegan}. \\
+In total, 22.870 slices were used to build the domains, yielding 20.583 trainA/trainB and 2.287 testA/testB images after the 90/10 split. \\
+CycleGAN is trained for 50 epochs plus 50 epochs of linear learning-rate decay. Synthetic images are generated at epoch 50 and added only to the training set of the settings that use them, pairing each synthetic slice name with the label of its corresponding real slice. Furthermore, due to computational constraints, CycleGAN training is capped at 2.000 images; this cap applies only to CycleGAN training. \\
+YOLO is trained on the full training split of real slices. In augmentation settings, we include all available synthetic images and classical augmented copies. CycleGAN augments appearance and does not introduce new nodules; it preserves object geometry and spatial layouts.
+
+\subsection{Evaluation Protocol}
+We report AP@0.5 and AP@0.5:0.95 (mAP) using the Ultralytics validation routine, and compute Mean IoU restricted to true positives with IoU $\geq 0.5$. Metrics are identical across regimes, following common object detection evaluation practice~\cite{padilla2020metrics}. The validation split is held fixed for fair comparison.
+
+\subsection{Implementation Details}
+All experiments use identical YOLO hyperparameters and the same data split to ensure comparability. CycleGAN follows the default architecture and losses (adversarial + cycle-consistency), except for the number of real images for training~\cite{zhu2017cyclegan}. The LUNA16 subset choice and 2D slice processing reflect computational constraints and the focus on pulmonary nodule detection in axial slices.
+
+% \subsection{Limitations}
+% Our study is limited by: (i) the use of a LUNA16 subset and 2D slices, which may omit inter-slice context; (ii) absence of a separate patient-level test set; (iii) potential slice-level split leakage if scans contribute slices to both train and val; and (iv) CycleGAN training capped at 2000 images. Prior work suggests that appearance-level synthesis may not fully model geometric variability critical for precise localization~\cite{hammami2020cyclegan}, and anatomically consistent volumetric synthesis (e.g., diffusion or 3D style-based methods) could be promising directions~\cite{khader2023ddpm3d,ellis2022stylegan3d}.

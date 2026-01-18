@@ -19,8 +19,8 @@ IMG_SIZE = 512
 BATCH = 32
 IMG_EXT = ".png"
 LBL_EXT = ".txt"
-AUG_MULT = 3  # number of augmented copies per real train image
-AUGMENT_CYC = False  # set True to also augment CycleGAN images
+AUG_MULT = 3          # number of augmented copies per real train image
+AUGMENT_CYC = False   # set True to also augment CycleGAN images
 
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
@@ -58,24 +58,24 @@ def prepare_dataset():
         if img_file is None or lbl_file is None:
             continue
 
-        # Copy real
+        # Real
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
 
-        # Augmented copies
+        # Augmented copies from real
         for i in range(AUG_MULT):
             aug_name = name.replace(IMG_EXT, f"_aug{i+1}{IMG_EXT}")
             apply_intensity_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / aug_name.replace(IMG_EXT, LBL_EXT))
 
-        # CycleGAN image
+        # CycleGAN synthetic (prefixed)
         syn_file = SYN_DIR / name
         if syn_file.exists():
             cyc_name = f"cyc_{name}"
             shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_name)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_name.replace(IMG_EXT, LBL_EXT))
 
-            # Optional: augment CycleGAN image(s)
+            # Optional: augment synthetic images too
             if AUGMENT_CYC:
                 for i in range(AUG_MULT):
                     cyc_aug = name.replace(IMG_EXT, f"_cyc_aug{i+1}{IMG_EXT}")

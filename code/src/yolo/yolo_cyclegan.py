@@ -39,23 +39,25 @@ def prepare_dataset():
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
 
-    # Copy real train
+    # Copy real train + add CycleGAN (prefixed with 'cyc_')
     for name in split["train"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
         if img_file is None or lbl_file is None:
             continue
+
+        # Real
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
 
-        # Add CycleGAN image (train only)
+        # Synthetic (prefixed)
         syn_file = SYN_DIR / name
         if syn_file.exists():
-            out_name = f"cyc_{name}"
-            shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / out_name)
-            shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / out_name.replace(IMG_EXT, LBL_EXT))
+            cyc_name = f"cyc_{name}"
+            shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_name)
+            shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_name.replace(IMG_EXT, LBL_EXT))
 
-    # Copy real val
+    # Real val only
     for name in split["val"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)

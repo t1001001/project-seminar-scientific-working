@@ -136,13 +136,13 @@ def prepare_dataset():
         if syn_file:
             try:
                 orig = Path(name).stem
-                base = Path(syn_file.name).stem
-                ext = Path(syn_file.name).suffix
-                cyc_img_name = f"cyc_{orig}__{base}{ext}"
-                cyc_lbl_name = f"cyc_{orig}__{base}{LBL_EXT}"
+                s = syn_file.stem
+                suf = next((sx for sx in SUFFIXES if s.endswith(sx)), "")
+                cyc_img_name = f"cyc_{orig}{suf}{syn_file.suffix}"
+                cyc_lbl_name = f"cyc_{orig}{suf}{LBL_EXT}"
                 shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
                 shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
-                print(f"[ADD] CycleGAN {syn_file.name} mapped from {name}")
+                print(f"[ADD] CycleGAN {syn_file.name} -> {cyc_img_name}")
                 if AUGMENT_CYC:
                     for i in range(AUG_MULT):
                         cyc_aug_name = Path(cyc_img_name).stem + f"_aug{i+1}{IMG_EXT}"
@@ -167,6 +167,7 @@ def prepare_dataset():
     vi = len(list((YOLO_DATA_DIR / "images/val").glob(f"*{IMG_EXT}")))
     vl = len(list((YOLO_DATA_DIR / "labels/val").glob(f"*{LBL_EXT}")))
     print(f"Prepared: train {ti} imgs/{tl} labels; val {vi} imgs/{vl} labels")
+
 
 def create_yaml():
     ensure_dir(YAML_PATH.parent)

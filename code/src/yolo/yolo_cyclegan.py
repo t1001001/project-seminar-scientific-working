@@ -85,18 +85,21 @@ def prepare_dataset():
         if syn_file:
             try:
                 orig = Path(name).stem
-                base = Path(syn_file.name).stem
-                ext = Path(syn_file.name).suffix
-                cyc_img_name = f"cyc_{orig}__{base}{ext}"
-                cyc_lbl_name = f"cyc_{orig}__{base}{LBL_EXT}"
+                s = syn_file.stem
+                suf = next((sx for sx in SUFFIXES if s.endswith(sx)), "")
+                cyc_img_name = f"cyc_{orig}{suf}{syn_file.suffix}"
+                cyc_lbl_name = f"cyc_{orig}{suf}{LBL_EXT}"
                 shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
                 shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
-                print(f"[ADD] {name} -> {cyc_img_name}")
+                add_count += 1
+                if add_count <= 10:
+                    print(f"[ADD] {name} -> {cyc_img_name}")
             except Exception as e:
                 print(f"[ERR] Synthetic copy failed for {name} ({syn_file}): {e}")
         else:
             miss_count += 1
-            print(f"[MISS] No CycleGAN match for {name}")
+            if miss_count <= 10:
+                print(f"[MISS] No CycleGAN match for {name}")
     val_names = [n for n in split["val"] if find_image_by_name(n) and find_label_by_name(n)]
     print(f"[INFO] Val usable entries: {len(val_names)}")
     for name in val_names:

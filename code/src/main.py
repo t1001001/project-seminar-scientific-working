@@ -25,15 +25,15 @@ def main():
     create_all_labels()
     make_split()
     cleanup()
-    # prepare_cyclegan()
-    # train_cyclegan()
-    # test_cyclegan()
-    # yolo_baseline()
-    # yolo_baseline_aug()
-    # yolo_cyclegan()
-    # yolo_cyclegan_aug()
-    # for name, model_path in MODELS.items():
-    #     evaluate(name, model_path)
+    prepare_cyclegan()
+    train_cyclegan()
+    test_cyclegan()
+    yolo_baseline()
+    yolo_baseline_aug()
+    yolo_cyclegan()
+    yolo_cyclegan_aug()
+    for name, model_path in MODELS.items():
+        evaluate(name, model_path)
 
 if __name__ == "__main__":
     main()

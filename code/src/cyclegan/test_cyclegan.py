@@ -6,7 +6,7 @@ import utils.config as conf
 
 DATASET = os.path.join(conf.ROOT, "data", "cyclegan")
 NAME = "luna_cyclegan"
-EPOCHS = 50
+EPOCHS = 25
 OUT_DIR = Path(conf.ROOT) / "data" / "cyclegan" / "generated"
 CYCLEGAN_REPO = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "test.py")
 

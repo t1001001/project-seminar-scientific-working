@@ -81,32 +81,16 @@ def find_label_by_name(name: str) -> Path | None:
     matches = list(PRE_LABEL_DIR.rglob(name.replace(IMG_EXT, LBL_EXT)))
     return matches[0] if matches else None
 
-def find_syn_by_name(name: str) -> Path | None:
+def find_syn_by_names(name: str) -> list[Path]:
     stem = Path(name).stem
     exts = {".png", ".jpg", ".jpeg"}
-    candidates = [p for p in SYN_DIR.rglob(f"{stem}_*") if p.suffix.lower() in exts]
-    if not candidates:
-        candidates = [
-            p for p in SYN_DIR.rglob("*.*")
-            if p.suffix.lower() in exts and stem in p.stem
-        ]
-    if not candidates and len(stem) >= 8:
-        patt = re.compile(re.escape(stem[:8]), re.IGNORECASE)
-        candidates = [
-            p for p in SYN_DIR.rglob("*.*")
-            if p.suffix.lower() in exts and patt.search(p.stem)
-        ]
-    if not candidates:
-        return None
-    def rank(p: Path):
-        s = p.stem
-        base = 0 if s.startswith(stem) else 1
-        for i, suf in enumerate(SUFFIXES):
-            if s.endswith(suf):
-                return (base, i, len(s))
-        return (base, len(SUFFIXES), len(s))
-    candidates.sort(key=rank)
-    return candidates[0]
+    candidates = [
+        p for p in SYN_DIR.rglob("*")
+        if p.suffix.lower() in exts
+        and p.stem.startswith(stem + "_")
+        and any(p.stem.endswith(suf) for suf in SUFFIXES)
+    ]
+    return sorted(candidates)
 
 def prepare_dataset():
     split = load_split()
@@ -132,25 +116,24 @@ def prepare_dataset():
             aug_name = name.replace(IMG_EXT, f"_aug{i+1}{IMG_EXT}")
             apply_specific_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name, i)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / aug_name.replace(IMG_EXT, LBL_EXT))
-        syn_file = find_syn_by_name(name)
-        if syn_file:
-            try:
-                orig = Path(name).stem
-                s = syn_file.stem
-                suf = next((sx for sx in SUFFIXES if s.endswith(sx)), "")
-                cyc_img_name = f"cyc_{orig}{suf}{syn_file.suffix}"
-                cyc_lbl_name = f"cyc_{orig}{suf}{LBL_EXT}"
-                shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
-                shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
-                print(f"[ADD] CycleGAN {syn_file.name} -> {cyc_img_name}")
-                if AUGMENT_CYC:
-                    for i in range(AUG_MULT):
-                        cyc_aug_name = Path(cyc_img_name).stem + f"_aug{i+1}{IMG_EXT}"
-                        apply_specific_aug(syn_file, YOLO_DATA_DIR / "images/train" / cyc_aug_name, i)
-                        shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / f"{Path(cyc_aug_name).stem}{LBL_EXT}")
-                add_count += 1
-            except Exception as e:
-                print(f"[ERR] Synthetic copy failed for {name} ({syn_file}): {e}")
+        syn_files = find_syn_by_names(name)
+        if syn_files:
+            orig = Path(name).stem
+            for syn_file in syn_files:
+                try:
+                    s = syn_file.stem
+                    suf = next((sx for sx in SUFFIXES if s.endswith(sx)), "")
+                    cyc_img_name = f"cyc_{orig}{suf}{syn_file.suffix}"
+                    cyc_lbl_name = f"cyc_{orig}{suf}{LBL_EXT}"
+
+                    shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
+                    shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
+
+                    print(f"[ADD] CycleGAN {syn_file.name} -> {cyc_img_name}")
+                    add_count += 1
+
+                except Exception as e:
+                    print(f"[ERR] Failed copying {syn_file}: {e}")
         else:
             miss_count += 1
             if miss_count <= 10:

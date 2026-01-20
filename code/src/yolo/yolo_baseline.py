@@ -27,7 +27,6 @@ def load_split():
         return json.load(f)
 
 def build_yolo_folders():
-    print("Creating YOLO directory structure...")
     for split in ["train", "val"]:
         ensure_dir(YOLO_DATA_DIR / "images" / split)
         ensure_dir(YOLO_DATA_DIR / "labels" / split)
@@ -65,7 +64,6 @@ names: ["nodule"]
     print("YAML created.")
 
 def train_yolo():
-    print("Starting YOLOv11 baseline training...")
     model = YOLO(WEIGHTS)
     model.train(
         data=str(YAML_PATH),
@@ -74,38 +72,26 @@ def train_yolo():
         batch=BATCH,
         name="baseline"
     )
-    print("Training complete.")
 
 def yolo_baseline():
-    print("\n=== YOLO Baseline (Experiment A) ===")
-
     split = load_split()
     build_yolo_folders()
-
     pairs = collect_image_label_pairs()
-
     train_pairs = []
     val_pairs = []
-
     for img_path, lbl_path in pairs:
         if img_path.name in split["train"]:
             train_pairs.append((img_path, lbl_path))
         elif img_path.name in split["val"]:
             val_pairs.append((img_path, lbl_path))
-
     assert len(train_pairs) > 0, "No training samples found!"
     assert len(val_pairs) > 0, "No validation samples found!"
-
     print(f"Train samples: {len(train_pairs)}")
     print(f"Val samples: {len(val_pairs)}")
-
     copy_pairs(train_pairs, "train")
     copy_pairs(val_pairs, "val")
-
     create_yaml()
     train_yolo()
-
-    print("=== EXPERIMENT A DONE ===\n")
 
 if __name__ == "__main__":
     yolo_baseline()

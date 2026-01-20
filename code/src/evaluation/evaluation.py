@@ -22,7 +22,6 @@ CONF_THRES = 0.001
 LOG_CSV = Path(conf.ROOT) / "evaluation_results.csv"
 
 def load_gt_boxes(label_path, img_shape):
-    """Load YOLO-format labels and convert to [x1, y1, x2, y2] format"""
     h, w = img_shape
     boxes = []
     if not os.path.exists(label_path):
@@ -38,7 +37,6 @@ def load_gt_boxes(label_path, img_shape):
     return torch.tensor(boxes, dtype=torch.float32)
 
 def mean_iou_yolo(model_path, val_images, val_labels, conf=0.001):
-    """Compute mean IoU ≥ 0.5 between predictions and ground truth"""
     model = YOLO(model_path)
     results = model.predict(
         source=val_images,
@@ -89,7 +87,6 @@ def log_results(results, csv_path=LOG_CSV):
     print(f"Results saved to {csv_path}")
 
 if __name__ == "__main__":
-    print("\n=== EVALUATION OF ALL EXPERIMENTS ===")
     MODELS = {
     "Baseline": f"{conf.ROOT.parent}/runs/detect/baseline/weights/best.pt",
     "Baseline Augmented": f"{conf.ROOT.parent}/runs/detect/baseline_aug/weights/best.pt",

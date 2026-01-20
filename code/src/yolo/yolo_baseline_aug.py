@@ -76,30 +76,20 @@ def find_image_by_name(name: str) -> Path | None:
 
 def prepare_dataset():
     split = load_split()
-
-    # Reset folders
     for folder in ["images/train", "images/val", "labels/train", "labels/val"]:
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
-
-    # Train: copy real + add specific augmented copies
     for name in split["train"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
         if img_file is None or lbl_file is None:
             continue
-
-        # Copy real
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
-
-        # Add augmented copies with fixed types per index
         for i in range(AUG_MULT):
             aug_name = name.replace(IMG_EXT, f"_aug{i+1}{IMG_EXT}")
             apply_specific_aug(img_file, YOLO_DATA_DIR / "images/train" / aug_name, i)
             shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / aug_name.replace(IMG_EXT, LBL_EXT))
-
-    # Val: copy real only
     for name in split["val"]:
         img_file = find_image_by_name(name)
         lbl_file = find_label_by_name(name)
@@ -107,8 +97,6 @@ def prepare_dataset():
             continue
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/val" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/val" / name.replace(IMG_EXT, LBL_EXT))
-
-    # Simple consistency check
     train_imgs = list((YOLO_DATA_DIR / "images/train").glob(f"*{IMG_EXT}"))
     train_lbls = list((YOLO_DATA_DIR / "labels/train").glob(f"*{LBL_EXT}"))
     val_imgs = list((YOLO_DATA_DIR / "images/val").glob(f"*{IMG_EXT}"))
@@ -128,10 +116,8 @@ names: ["nodule"]
     print("YAML created.")
 
 def yolo_baseline_aug():
-    print("\n=== YOLO Baseline + Augmentation (Experiment B) ===")
     prepare_dataset()
     create_yaml()
-
     model = YOLO(WEIGHTS)
     model.train(
         data=str(YAML_PATH),
@@ -140,7 +126,6 @@ def yolo_baseline_aug():
         batch=BATCH,
         name="baseline_aug"
     )
-    print("=== EXPERIMENT B DONE ===\n")
 
 if __name__ == "__main__":
     yolo_baseline_aug()

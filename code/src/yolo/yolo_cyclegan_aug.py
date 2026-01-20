@@ -7,7 +7,6 @@ from ultralytics import YOLO
 import utils.config as conf
 import numpy as np
 import cv2
-import re
 
 PRE_IMG_DIR = Path(f"{conf.ROOT}/data/preprocessed/images")
 PRE_LABEL_DIR = Path(f"{conf.ROOT}/data/preprocessed/labels")
@@ -151,7 +150,6 @@ def prepare_dataset():
     vl = len(list((YOLO_DATA_DIR / "labels/val").glob(f"*{LBL_EXT}")))
     print(f"Prepared: train {ti} imgs/{tl} labels; val {vi} imgs/{vl} labels")
 
-
 def create_yaml():
     ensure_dir(YAML_PATH.parent)
     content = f"""
@@ -165,7 +163,6 @@ names: ["nodule"]
     print("YAML created.")
 
 def yolo_cyclegan_aug():
-    print("\n=== YOLO Baseline Augmentation + CycleGAN (Experiment D) ===")
     prepare_dataset()
     create_yaml()
     model = YOLO(WEIGHTS)
@@ -176,7 +173,6 @@ def yolo_cyclegan_aug():
         batch=BATCH,
         name="cyclegan_aug"
     )
-    print("=== EXPERIMENT D DONE ===\n")
 
 if __name__ == "__main__":
     yolo_cyclegan_aug()

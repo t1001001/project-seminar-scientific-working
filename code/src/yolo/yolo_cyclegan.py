@@ -121,10 +121,8 @@ names: ["nodule"]
     print("YAML created.")
 
 def yolo_cyclegan():
-    print("\n=== YOLO CycleGAN (Experiment C) ===")
     prepare_dataset()
     create_yaml()
-    print("Training YOLOv11 on CycleGAN-Augmented Dataset")
     model = YOLO(WEIGHTS)
     model.train(
         data=str(YAML_PATH),
@@ -133,7 +131,6 @@ def yolo_cyclegan():
         batch=BATCH,
         name="cyclegan"
     )
-    print("=== EXPERIMENT C DONE ===\n")
 
 if __name__ == "__main__":
     yolo_cyclegan()

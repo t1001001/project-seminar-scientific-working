@@ -46,6 +46,3 @@ We evaluate all models on a fixed validation split using standard object detecti
     \item \textbf{AP@0.5:0.95}: Mean Average Precision (mAP) computed as the average of AP values over IoU thresholds from 0.50 to 0.95 in increments of 0.05 (i.e., 10 thresholds).
     \item \textbf{Mean IoU}: Mean Intersection over Union computed only over true positive detections with IoU $\geq 0.5$, using 1:1 matching between predictions and ground-truth boxes.
 \end{itemize}
-
-\subsection{Implementation Details}
-All experiments use identical YOLO hyperparameters and the same data split to ensure comparability. CycleGAN follows the default architecture and losses (adversarial + cycle-consistency), except for the number of real images for training~\cite{zhu2017cyclegan}. The LUNA16 subset choice and 2D slice processing reflect computational constraints and the focus on pulmonary nodule detection in axial slices.

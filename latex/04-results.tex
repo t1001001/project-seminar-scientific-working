@@ -36,10 +36,10 @@ Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0
 \toprule
 Setting & $N_{\text{real}}$ & $N_{\text{aug}}$ & $N_{\text{gan}}$ & AP@0.5 & AP@0.5:0.95 & Mean IoU \\
 \midrule
-Baseline & 84 & 0 & 0 & 0.747 & 0.398 & 0.691 \\
-Baseline + Classical Aug & 84 & $5\times$84 & 0 & 0.768 & 0.415 & 0.750 \\
-Baseline + CycleGAN & 84 & 0 & $1\times$84 & 0.742 & 0.434 & 0.745 \\
-Classical Aug + CycleGAN & 84 & $5\times$84 & $1\times$84 & 0.770 & 0.467 & 0.797 \\
+Baseline & 295 & 0 & 0 & 0.711 & 0.384 & 0.695 \\
+Baseline + Classical Aug & 295 & $5\times$295 & 0 & 0.753 & 0.431 & 0.761 \\
+Baseline + CycleGAN & 295 & 0 & 100 & 0.724 & 0.383 & 0.708 \\
+Classical Aug + CycleGAN & 295 & $5\times$295 & 100 & \textbf{0.822} & \textbf{0.476} & \textbf{0.763} \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -66,19 +66,31 @@ def load_split():
         return json.load(f)
 
 def prepare_dataset():
-    split = load_split()
+    with open(SPLIT_PATH) as f:
+        split = json.load(f)
     for folder in ["images/train", "images/val", "labels/train", "labels/val"]:
         shutil.rmtree(YOLO_DATA_DIR / folder, ignore_errors=True)
         (YOLO_DATA_DIR / folder).mkdir(parents=True, exist_ok=True)
     PRE_IMG_CACHE = {p.name: p for p in PRE_IMG_DIR.rglob(f"*{IMG_EXT}")}
-    PRE_LABEL_CACHE = {p.name: p for p in PRE_LABEL_DIR.rglob(f"*{LBL_EXT}")}
-    SYN_CACHE = [p for p in SYN_DIR.rglob("*") if p.suffix.lower() in {".png", ".jpg", ".jpeg"}]
-    ti = tl = vi = vl = cyc_imgs = cyc_lbls = 0
-    add_count = miss_count = skip_count = 0
-    train_names = [n for n in split["train"] if n in PRE_IMG_CACHE and n.replace(IMG_EXT, LBL_EXT) in PRE_LABEL_CACHE]
+    SYN_CACHE = [p for p in SYN_DIR.rglob(f"*{IMG_EXT}")]
+    add_count = skip_count = 0
+    ti = tl = 0
+    train_names = [n for n in split["train"] if n in PRE_IMG_CACHE]
+    print(f"[INFO] Train usable entries: {len(train_names)}")
     for name in train_names:
+        if "_" not in name:
+            skip_count += 1
+            if skip_count <= 10:
+                print(f"[SKIP] Invalid image name {name}")
+            continue
+        uid, name_idx = name.rsplit("_", 1)
         img_file = PRE_IMG_CACHE[name]
-        lbl_file = PRE_LABEL_CACHE[name.replace(IMG_EXT, LBL_EXT)]
+        lbl_file = PRE_LABEL_DIR / uid / f"{uid}_{name_idx.replace(IMG_EXT, LBL_EXT)}"
+        if not lbl_file.exists():
+            skip_count += 1
+            if skip_count <= 10:
+                print(f"[SKIP] No label found for {name}")
+            continue
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/train" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / name.replace(IMG_EXT, LBL_EXT))
         ti += 1
@@ -91,34 +103,61 @@ def prepare_dataset():
             ex.map(aug_task, range(AUG_MULT))
         ti += AUG_MULT
         tl += AUG_MULT
-        stem = Path(name).stem
-        syn_files = [p for p in SYN_CACHE if p.stem.startswith(stem + "_") and any(p.stem.endswith(s) for s in SUFFIXES)]
-        if syn_files:
-            pairs = []
-            for syn_file in syn_files:
-                s = syn_file.stem
-                suf = next((sx for sx in SUFFIXES if s.endswith(sx)), "")
-                cyc_img_name = f"cyc_{stem}{suf}{syn_file.suffix}"
-                cyc_lbl_name = f"cyc_{stem}{suf}{LBL_EXT}"
-                pairs.append((syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name))
-                pairs.append((lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name))
-                cyc_imgs += 1
-                cyc_lbls += 1
-            with ThreadPoolExecutor(max_workers=8) as ex:
-                ex.map(lambda p: shutil.copy2(*p), pairs)
-            add_count += len(syn_files)
-        else:
-            miss_count += 1
-    val_names = [n for n in split["val"] if n in PRE_IMG_CACHE and n.replace(IMG_EXT, LBL_EXT) in PRE_LABEL_CACHE]
+    vi = vl = 0
+    val_names = [n for n in split["val"] if n in PRE_IMG_CACHE]
+    print(f"[INFO] Val usable entries: {len(val_names)}")
     for name in val_names:
+        if "_" not in name:
+            skip_count += 1
+            if skip_count <= 10:
+                print(f"[SKIP] Invalid image name {name}")
+            continue
+        uid, name_idx = name.rsplit("_", 1)
         img_file = PRE_IMG_CACHE[name]
-        lbl_file = PRE_LABEL_CACHE[name.replace(IMG_EXT, LBL_EXT)]
+        lbl_file = PRE_LABEL_DIR / uid / f"{uid}_{name_idx.replace(IMG_EXT, LBL_EXT)}"
+        if not lbl_file.exists():
+            skip_count += 1
+            if skip_count <= 10:
+                print(f"[SKIP] No label found for {name}")
+            continue
         shutil.copy2(img_file, YOLO_DATA_DIR / "images/val" / name)
         shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/val" / name.replace(IMG_EXT, LBL_EXT))
         vi += 1
         vl += 1
+    cyc_imgs = cyc_lbls = 0
+    for syn_file in SYN_CACHE:
+        stem_base = syn_file.stem
+        suf = ""
+        for sfx in SUFFIXES:
+            if stem_base.endswith(sfx):
+                suf = sfx
+                stem_base = stem_base[:-len(sfx)]
+                break
+        if "_" not in stem_base:
+            skip_count += 1
+            if skip_count <= 10:
+                print(f"[SKIP] Invalid synthetic name {syn_file.name}")
+            continue
+        uid, name_idx = stem_base.rsplit("_", 1)
+        lbl_file = PRE_LABEL_DIR / uid / f"{uid}_{name_idx}{LBL_EXT}"
+        if not lbl_file.exists():
+            skip_count += 1
+            if skip_count <= 10:
+                print(f"[SKIP] No label found for synthetic {syn_file.name}")
+            continue
+        cyc_img_name = f"cyc_{stem_base}{suf}{IMG_EXT}"
+        cyc_lbl_name = f"cyc_{stem_base}{suf}{LBL_EXT}"
+        shutil.copy2(syn_file, YOLO_DATA_DIR / "images/train" / cyc_img_name)
+        shutil.copy2(lbl_file, YOLO_DATA_DIR / "labels/train" / cyc_lbl_name)
+        add_count += 1
+        cyc_imgs += 1
+        cyc_lbls += 1
+    ti = len(list((YOLO_DATA_DIR / "images/train").glob(f"*{IMG_EXT}")))
+    tl = len(list((YOLO_DATA_DIR / "labels/train").glob(f"*{LBL_EXT}")))
+    vi = len(list((YOLO_DATA_DIR / "images/val").glob(f"*{IMG_EXT}")))
+    vl = len(list((YOLO_DATA_DIR / "labels/val").glob(f"*{LBL_EXT}")))
     print(f"Prepared: train {ti} imgs/{tl} labels; val {vi} imgs/{vl} labels")
-    print(f"Synthetic added: {add_count} | misses: {miss_count} | skips: {skip_count}")
+    print(f"Synthetic added: {add_count} | skips (no label or invalid): {skip_count}")
     print(f"cyc_* images: {cyc_imgs} | cyc_* labels: {cyc_lbls}")
 
 def create_yaml():

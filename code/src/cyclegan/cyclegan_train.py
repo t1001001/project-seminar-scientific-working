@@ -8,7 +8,7 @@ NAME = "luna_cyclegan"
 EPOCHS = 25
 CYCLEGAN_TRAIN = os.path.join(conf.ROOT, "pytorch-CycleGAN-and-pix2pix", "train.py")
 
-def train_cyclegan():
+def cyclegan_train():
     print("Starting CycleGAN training...")
     cmd = [
         sys.executable,
@@ -28,4 +28,4 @@ def train_cyclegan():
     print("CycleGAN training complete!")
 
 if __name__ == "__main__":
-    train_cyclegan()
+    cyclegan_train()

@@ -14,13 +14,13 @@ TRAIN_SPLIT = 0.8
 def ensure(path):
     path.mkdir(parents=True, exist_ok=True)
 
-def simple_style_transform(image_path):
+def style_transform(image_path):
     img = Image.open(image_path).convert("L")
     img = ImageEnhance.Contrast(img).enhance(1.4)
     img = ImageEnhance.Brightness(img).enhance(1.15)
     return img
 
-def prepare_cyclegan():
+def cyclegan_prep():
     print("Preparing CycleGAN datasets...")
     for sub in ["trainA", "trainB", "testA", "testB"]:
         ensure(CYCLEGAN_DIR / sub)
@@ -42,7 +42,7 @@ def prepare_cyclegan():
     print("Building trainA/trainB...")
     for img_path in tqdm(train_slices):
         shutil.copy2(img_path, CYCLEGAN_DIR / "trainA" / img_path.name)
-        styled = simple_style_transform(img_path)
+        styled = style_transform(img_path)
         styled.save(CYCLEGAN_DIR / "trainB" / img_path.name)
 
     print("Building testA/testB...")
@@ -54,4 +54,4 @@ def prepare_cyclegan():
     print("CycleGAN data created!")
 
 if __name__ == "__main__":
-    prepare_cyclegan()
+    cyclegan_prep()

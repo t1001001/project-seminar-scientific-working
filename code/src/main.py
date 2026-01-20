@@ -2,9 +2,9 @@ from preprocessing.extract_slices import extract_all
 from preprocessing.create_labels import create_all_labels
 from utils.cleanup import cleanup
 from utils.make_split import make_split
-from cyclegan.prepare_cyclegan import prepare_cyclegan
-from cyclegan.train_cyclegan import train_cyclegan
-from cyclegan.test_cyclegan import test_cyclegan
+from cyclegan.cyclegan_prep import cyclegan_prep
+from cyclegan.cyclegan_train import cyclegan_train
+from cyclegan.cyclegan_generate import cyclegan_generate
 from yolo.yolo_baseline import yolo_baseline              # Experiment A
 from yolo.yolo_baseline_aug import yolo_baseline_aug      # Experiment B
 from yolo.yolo_cyclegan import yolo_cyclegan            # Experiment C
@@ -25,9 +25,9 @@ def main():
     create_all_labels()
     make_split()
     cleanup()
-    prepare_cyclegan()
-    train_cyclegan()
-    test_cyclegan()
+    cyclegan_prep()
+    cyclegan_train()
+    cyclegan_generate()
     yolo_baseline()
     yolo_baseline_aug()
     yolo_cyclegan()

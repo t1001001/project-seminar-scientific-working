@@ -3,30 +3,52 @@ This section summarizes the qualitative examples and quantitative performance of
 
 \subsection{Qualitative Examples}
 Figure~\ref{fig:aug_examples} shows appearance-level augmentations (contrast, brightness, blur, noise, CLAHE) applied to a representative slice; Figure~\ref{fig:cyclegan_example} shows a CycleGAN-generated sample.
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\subfloat[Original]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142.png}}\hfill
-\subfloat[Contrast]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug1.png}}\hfill
-\subfloat[Brightness]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug2.png}}\\[0.6em]
-\subfloat[Gaussian blur]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug3.png}}\hfill
-\subfloat[Gaussian noise]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug4.png}}\hfill
-\subfloat[CLAHE]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug5.png}}
+\begin{subfigure}{0.3\linewidth}
+  \includegraphics[width=\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142.png}
+  \caption{Original}
+\end{subfigure}\hfill
+\begin{subfigure}{0.3\linewidth}
+  \includegraphics[width=\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug1.png}
+  \caption{Contrast}
+\end{subfigure}\hfill
+\begin{subfigure}{0.3\linewidth}
+  \includegraphics[width=\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug2.png}
+  \caption{Brightness}
+\end{subfigure}
+\vspace{0.6em}
+\begin{subfigure}{0.3\linewidth}
+  \includegraphics[width=\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug3.png}
+  \caption{Gaussian blur}
+\end{subfigure}\hfill
+\begin{subfigure}{0.3\linewidth}
+  \includegraphics[width=\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug4.png}
+  \caption{Gaussian noise}
+\end{subfigure}\hfill
+\begin{subfigure}{0.3\linewidth}
+  \includegraphics[width=\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug5.png}
+  \caption{CLAHE}
+\end{subfigure}
 \caption{Original CT slices including appearance-level augmentations.}
 \label{fig:aug_examples}
 \end{figure}
-
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.3\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_A.png}
-\includegraphics[width=0.3\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_B.png}
+\begin{subfigure}{0.3\linewidth}
+    \includegraphics[width=\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_A.png}
+    \caption{Fake A}
+\end{subfigure}\hspace{0.05\linewidth}
+\begin{subfigure}{0.3\linewidth}
+    \includegraphics[width=\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_B.png}
+    \caption{Fake B}
+\end{subfigure}
 \caption{CycleGAN-generated CT slices.}
 \label{fig:cyclegan_example}
 \end{figure}
 
 \subsection{Quantitative Performance}
-Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU.
-
+Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU. \\
 \begin{table}[htbp]
 \centering
 \caption{Validation performance and data composition per training setting. \\
@@ -44,9 +66,8 @@ Classical Aug + CycleGAN & 295 & $5\times$295 & 100 & \textbf{0.822} & \textbf{0
 \bottomrule
 \end{tabular}
 \end{table}
-\noindent
 Across all four training settings, classical augmentations consistently improved all metrics relative to the baseline trained solely on real slices. In particular, adding classical augmentations led to higher AP@0.5, AP@0.5:0.95, and Mean IoU. \\
 Training with CycleGAN-generated images (in addition to real images) yielded a higher AP@0.5:0.95 and Mean IoU compared to baseline, while AP@0.5:0.95 decreased (0.383 vs. 0.384), although this difference is so small that is likely falls withing normal variation. \\
-The combined setting of classical augmentation + CycleGAN achieved the best overall performance across all metrics, though the gains over classical augmentation alone were modest.
+The combined setting of classical augmentation + CycleGAN achieved the best overall performance across all metrics, though the gains over classical augmentation alone were modest. \\
 Altogether, these results suggest that CycleGAN serves as a complementary source of appearance variability that can modestly improve performance but does not replace classical augmentation. \\
 Given that classical augmentation also improved all metrics at lower computational overhead, the additional computational complexity of CycleGAN is hard to justify if solely used for appearance robustness.

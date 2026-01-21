@@ -1,4 +1,5 @@
 \section{Related Work}
+This section discusses previous studies related to deep-learning based in medical imaging, and the use of GAN-generated data for medical data augmentation. Limitations of existing approaches are discussed to position the contributions of this work.
 
 \subsection{GAN-based Augmentation in Medical Imaging}
 Generative Adversarial Networks (GANs)~\cite{goodfellow2014gan} and CycleGAN~\cite{zhu2017cyclegan} are widely used for medical image synthesis and augmentation. Empirical evidence shows substantial gains in CT-based classification and segmentation when augmenting with GAN-generated images~\cite{frid2018gan,sandfort2019cycleganCT}. However, transferring these benefits to spatially sensitive object detection is less clear. CycleGAN-based augmentation for YOLO in multi-organ CT detection reported mixed outcomes~\cite{hammami2020cyclegan}, suggesting that appearance-level transformations may not consistently enhance bounding-box localization. \\

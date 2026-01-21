@@ -3,7 +3,7 @@ The following methodology description provides an overview of the experimentatio
 
 \subsection{Dataset and Preprocessing}
 We use the LUNA16 chest CT benchmark derived from LIDC-IDRI~\cite{setio2017luna16}. Due to computational constraints, we operate on a subset of scans and extract two-dimensional axial slices from volumetric CTs. \\
-Each slice is converted to PNG and has a size of $512 \times 512$; labels are generated in YOLO format with a single class (\texttt{nodule}). \\
+Each slice is converted to PNG and has a size of $512 \times 512$; labels are generated in YOLO format with a single class (\texttt{nodule}). A slice can contain multiple nodules; in that case, multiple bounding boxes are saved as separate lines in the corresponding label file; slices without nodules have an empty label file. \\
 To avoid randomness in the split, we use a deterministic partition, assigning 80\% of slices to training and 20\% to validation. \\
 In total, preprocessing yields 70,315 slices.
 

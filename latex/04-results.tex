@@ -48,8 +48,8 @@ Figure~\ref{fig:aug_examples} shows appearance-level augmentations (contrast, br
 \end{figure}
 
 \subsection{Quantitative Performance}
-Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU. \\
-\begin{table}[htbp]
+Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU.
+\begin{table}[H]
 \centering
 \caption{Validation performance and data composition per training setting. \\
  $N_{\text{real}}$ = number of real training images (unique). \\
@@ -66,8 +66,9 @@ Classical Aug + CycleGAN & 295 & $5\times$295 & 100 & \textbf{0.822} & \textbf{0
 \bottomrule
 \end{tabular}
 \end{table}
+\noindent
 Across all four training settings, classical augmentations consistently improved all metrics relative to the baseline trained solely on real slices. In particular, adding classical augmentations led to higher AP@0.5, AP@0.5:0.95, and Mean IoU. \\
-Training with CycleGAN-generated images (in addition to real images) yielded a higher AP@0.5:0.95 and Mean IoU compared to baseline, while AP@0.5:0.95 decreased (0.383 vs. 0.384), although this difference is so small that is likely falls withing normal variation. \\
+Training with CycleGAN-generated images (in addition to real images) yielded a higher AP@0.5 (0.724 vs. 0.711) and Mean IoU (0.708 vs. 0.695) compared to baseline, while AP@0.5:0.95 decreased (0.383 vs. 0.384), although this difference is so small that it likely falls within normal variation. \\
 The combined setting of classical augmentation + CycleGAN achieved the best overall performance across all metrics, though the gains over classical augmentation alone were modest. \\
 Altogether, these results suggest that CycleGAN serves as a complementary source of appearance variability that can modestly improve performance but does not replace classical augmentation. \\
 Given that classical augmentation also improved all metrics at lower computational overhead, the additional computational complexity of CycleGAN is hard to justify if solely used for appearance robustness.

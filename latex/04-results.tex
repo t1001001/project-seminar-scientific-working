@@ -2,53 +2,32 @@
 This section summarizes the qualitative examples and quantitative performance of the four training settings and show the effects of CycleGAN and classical augmentation on object detection.
 
 \subsection{Qualitative Examples}
-Figure~\ref{fig:aug_examples} shows appearance-level augmentations (contrast, brightness, blur, noise, CLAHE) applied to a representative slice; Figure~\ref{fig:cyclegan_example} shows a CycleGAN-generated sample.
+Figure~\ref{fig:cyclegan_example} shows two CycleGAN-generated CT slices; Figure~\ref{fig:aug_examples} shows appearance-level augmentations (contrast, brightness, blur, noise, CLAHE) applied to a representative slice.
 
 \begin{figure}[H]
 \centering
-\subfloat[Original]{%
-  \includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142.png}
-}\hfill
-\subfloat[Contrast]{%
-  \includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug1.png}
-}\hfill
-\subfloat[Brightness]{%
-  \includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug2.png}
-}
-
-\vspace{0.6em}
-
-\subfloat[Gaussian blur]{%
-  \includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug3.png}
-}\hfill
-\subfloat[Gaussian noise]{%
-  \includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug4.png}
-}\hfill
-\subfloat[CLAHE]{%
-  \includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug5.png}
-}
-
-\caption{Original CT slices including appearance-level augmentations.}
-\label{fig:aug_examples}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\subfloat[Fake A]{%
-  \includegraphics[width=0.3\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_A.png}
-}\hspace{0.05\linewidth}
-\subfloat[Fake B]{%
-  \includegraphics[width=0.3\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_B.png}
-}
-
+\includegraphics[width=0.3\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_A.png}\hspace{0.05\linewidth}
+\includegraphics[width=0.3\linewidth]{figs/cyc_1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_fake_B.png}
 \caption{CycleGAN-generated CT slices.}
 \label{fig:cyclegan_example}
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\subfloat[Original]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142.png}}\hfill
+\subfloat[Contrast]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug1.png}}\hfill
+\subfloat[Brightness]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug2.png}}\\[0.6em]
+\subfloat[Gaussian blur]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug3.png}}\hfill
+\subfloat[Gaussian noise]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug4.png}}\hfill
+\subfloat[CLAHE]{\includegraphics[width=0.3\linewidth]{figs/1.3.6.1.4.1.14519.5.2.1.6279.6001.100621383016233746780170740405_0142_aug5.png}}
+\caption{Original CT slices including appearance-level augmentations.}
+\label{fig:aug_examples}
+\end{figure}
 
 \subsection{Quantitative Performance}
 Four settings are evaluated on the fixed validation split using AP@0.5, AP@0.5:0.95, and Mean IoU.
-\begin{table}[H]
+
+\begin{table}[htbp]
 \centering
 \caption{Validation performance and data composition per training setting. \\
  $N_{\text{real}}$ = number of real training images (unique). \\
